@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>cn.itcast.sspc</groupId>
+    <artifactId>itcast-sspc-project</artifactId>
+    <packaging>pom</packaging>
+    <version>1.0-SNAPSHOT</version>
+    <modules>
+        <module>day01-spider-base</module>
+        <module>day02-spider-huxiu</module>
+        <module>day03-spider-jdproduct</module>
+        <module>day04-lucene-base</module>
+        <module>extend-spider-wxaddfriend</module>
+        <module>extend-spider-doVote4FenDou</module>
+        <module>extend-lucene-webSearcher</module>
+        <module>day05-solr-base</module>
+        <module>day06-solrcloud-base</module>
+    </modules>
+</project>
