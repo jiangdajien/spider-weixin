@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>7-如何解析爬虫爬取回来的数据</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+/* GitHub stylesheet for MarkdownPad (http://markdownpad.com) */
+/* Author: Nicolas Hery - http://nicolashery.com */
+/* Version: b13fe65ca28d2e568c6ed5d7f06581183df8f2ff */
+/* Source: https://github.com/nicolahery/markdownpad-github */
+
+/* RESET
+=============================================================================*/
+
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* BODY
+=============================================================================*/
+
+body {
+  font-family: Helvetica, arial, freesans, clean, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
+  background-color: #fff;
+  padding: 20px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+body>*:first-child {
+  margin-top: 0 !important;
+}
+
+body>*:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* BLOCKS
+=============================================================================*/
+
+p, blockquote, ul, ol, dl, table, pre {
+  margin: 15px 0;
+}
+
+/* HEADERS
+=============================================================================*/
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 20px 0 10px;
+  padding: 0;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 tt, h1 code, h2 tt, h2 code, h3 tt, h3 code, h4 tt, h4 code, h5 tt, h5 code, h6 tt, h6 code {
+  font-size: inherit;
+}
+
+h1 {
+  font-size: 28px;
+  color: #000;
+}
+
+h2 {
+  font-size: 24px;
+  border-bottom: 1px solid #ccc;
+  color: #000;
+}
+
+h3 {
+  font-size: 18px;
+}
+
+h4 {
+  font-size: 16px;
+}
+
+h5 {
+  font-size: 14px;
+}
+
+h6 {
+  color: #777;
+  font-size: 14px;
+}
+
+body>h2:first-child, body>h1:first-child, body>h1:first-child+h2, body>h3:first-child, body>h4:first-child, body>h5:first-child, body>h6:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+h1+p, h2+p, h3+p, h4+p, h5+p, h6+p {
+  margin-top: 10px;
+}
+
+/* LINKS
+=============================================================================*/
+
+a {
+  color: #4183C4;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* LISTS
+=============================================================================*/
+
+ul, ol {
+  padding-left: 30px;
+}
+
+ul li > :first-child, 
+ol li > :first-child, 
+ul li ul:first-of-type, 
+ol li ol:first-of-type, 
+ul li ol:first-of-type, 
+ol li ul:first-of-type {
+  margin-top: 0px;
+}
+
+ul ul, ul ol, ol ol, ol ul {
+  margin-bottom: 0;
+}
+
+dl {
+  padding: 0;
+}
+
+dl dt {
+  font-size: 14px;
+  font-weight: bold;
+  font-style: italic;
+  padding: 0;
+  margin: 15px 0 5px;
+}
+
+dl dt:first-child {
+  padding: 0;
+}
+
+dl dt>:first-child {
+  margin-top: 0px;
+}
+
+dl dt>:last-child {
+  margin-bottom: 0px;
+}
+
+dl dd {
+  margin: 0 0 15px;
+  padding: 0 15px;
+}
+
+dl dd>:first-child {
+  margin-top: 0px;
+}
+
+dl dd>:last-child {
+  margin-bottom: 0px;
+}
+
+/* CODE
+=============================================================================*/
+
+pre, code, tt {
+  font-size: 12px;
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
+}
+
+code, tt {
+  margin: 0 0px;
+  padding: 0px 0px;
+  white-space: nowrap;
+  border: 1px solid #eaeaea;
+  background-color: #f8f8f8;
+  border-radius: 3px;
+}
+
+pre>code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent;
+}
+
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px;
+}
+
+pre code, pre tt {
+  background-color: transparent;
+  border: none;
+}
+
+kbd {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #DDDDDD;
+    background-image: linear-gradient(#F1F1F1, #DDDDDD);
+    background-repeat: repeat-x;
+    border-color: #DDDDDD #CCCCCC #CCCCCC #DDDDDD;
+    border-image: none;
+    border-radius: 2px 2px 2px 2px;
+    border-style: solid;
+    border-width: 1px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    line-height: 10px;
+    padding: 1px 4px;
+}
+
+/* QUOTES
+=============================================================================*/
+
+blockquote {
+  border-left: 4px solid #DDD;
+  padding: 0 15px;
+  color: #777;
+}
+
+blockquote>:first-child {
+  margin-top: 0px;
+}
+
+blockquote>:last-child {
+  margin-bottom: 0px;
+}
+
+/* HORIZONTAL RULES
+=============================================================================*/
+
+hr {
+  clear: both;
+  margin: 15px 0;
+  height: 0px;
+  overflow: hidden;
+  border: none;
+  background: transparent;
+  border-bottom: 4px solid #ddd;
+  padding: 0;
+}
+
+/* TABLES
+=============================================================================*/
+
+table th {
+  font-weight: bold;
+}
+
+table th, table td {
+  border: 1px solid #ccc;
+  padding: 6px 13px;
+}
+
+table tr {
+  border-top: 1px solid #ccc;
+  background-color: #fff;
+}
+
+table tr:nth-child(2n) {
+  background-color: #f8f8f8;
+}
+
+/* IMAGES
+=============================================================================*/
+
+img {
+  max-width: 100%
+}
+</style>
+<style type="text/css">
+.highlight  { background: #ffffff; }
+.highlight .c { color: #999988; font-style: italic } /* Comment */
+.highlight .err { color: #a61717; background-color: #e3d2d2 } /* Error */
+.highlight .k { font-weight: bold } /* Keyword */
+.highlight .o { font-weight: bold } /* Operator */
+.highlight .cm { color: #999988; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #999999; font-weight: bold } /* Comment.Preproc */
+.highlight .c1 { color: #999988; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #999999; font-weight: bold; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #000000; background-color: #ffdddd } /* Generic.Deleted */
+.highlight .gd .x { color: #000000; background-color: #ffaaaa } /* Generic.Deleted.Specific */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .gr { color: #aa0000 } /* Generic.Error */
+.highlight .gh { color: #999999 } /* Generic.Heading */
+.highlight .gi { color: #000000; background-color: #ddffdd } /* Generic.Inserted */
+.highlight .gi .x { color: #000000; background-color: #aaffaa } /* Generic.Inserted.Specific */
+.highlight .go { color: #888888 } /* Generic.Output */
+.highlight .gp { color: #555555 } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #aaaaaa } /* Generic.Subheading */
+.highlight .gt { color: #aa0000 } /* Generic.Traceback */
+.highlight .kc { font-weight: bold } /* Keyword.Constant */
+.highlight .kd { font-weight: bold } /* Keyword.Declaration */
+.highlight .kp { font-weight: bold } /* Keyword.Pseudo */
+.highlight .kr { font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #445588; font-weight: bold } /* Keyword.Type */
+.highlight .m { color: #009999 } /* Literal.Number */
+.highlight .s { color: #d14 } /* Literal.String */
+.highlight .na { color: #008080 } /* Name.Attribute */
+.highlight .nb { color: #0086B3 } /* Name.Builtin */
+.highlight .nc { color: #445588; font-weight: bold } /* Name.Class */
+.highlight .no { color: #008080 } /* Name.Constant */
+.highlight .ni { color: #800080 } /* Name.Entity */
+.highlight .ne { color: #990000; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #990000; font-weight: bold } /* Name.Function */
+.highlight .nn { color: #555555 } /* Name.Namespace */
+.highlight .nt { color: #000080 } /* Name.Tag */
+.highlight .nv { color: #008080 } /* Name.Variable */
+.highlight .ow { font-weight: bold } /* Operator.Word */
+.highlight .w { color: #bbbbbb } /* Text.Whitespace */
+.highlight .mf { color: #009999 } /* Literal.Number.Float */
+.highlight .mh { color: #009999 } /* Literal.Number.Hex */
+.highlight .mi { color: #009999 } /* Literal.Number.Integer */
+.highlight .mo { color: #009999 } /* Literal.Number.Oct */
+.highlight .sb { color: #d14 } /* Literal.String.Backtick */
+.highlight .sc { color: #d14 } /* Literal.String.Char */
+.highlight .sd { color: #d14 } /* Literal.String.Doc */
+.highlight .s2 { color: #d14 } /* Literal.String.Double */
+.highlight .se { color: #d14 } /* Literal.String.Escape */
+.highlight .sh { color: #d14 } /* Literal.String.Heredoc */
+.highlight .si { color: #d14 } /* Literal.String.Interpol */
+.highlight .sx { color: #d14 } /* Literal.String.Other */
+.highlight .sr { color: #009926 } /* Literal.String.Regex */
+.highlight .s1 { color: #d14 } /* Literal.String.Single */
+.highlight .ss { color: #990073 } /* Literal.String.Symbol */
+.highlight .bp { color: #999999 } /* Name.Builtin.Pseudo */
+.highlight .vc { color: #008080 } /* Name.Variable.Class */
+.highlight .vg { color: #008080 } /* Name.Variable.Global */
+.highlight .vi { color: #008080 } /* Name.Variable.Instance */
+.highlight .il { color: #009999 } /* Literal.Number.Integer.Long */
+.pl-c {
+    color: #969896;
+}
+
+.pl-c1,.pl-mdh,.pl-mm,.pl-mp,.pl-mr,.pl-s1 .pl-v,.pl-s3,.pl-sc,.pl-sv {
+    color: #0086b3;
+}
+
+.pl-e,.pl-en {
+    color: #795da3;
+}
+
+.pl-s1 .pl-s2,.pl-smi,.pl-smp,.pl-stj,.pl-vo,.pl-vpf {
+    color: #333;
+}
+
+.pl-ent {
+    color: #63a35c;
+}
+
+.pl-k,.pl-s,.pl-st {
+    color: #a71d5d;
+}
+
+.pl-pds,.pl-s1,.pl-s1 .pl-pse .pl-s2,.pl-sr,.pl-sr .pl-cce,.pl-sr .pl-sra,.pl-sr .pl-sre,.pl-src,.pl-v {
+    color: #df5000;
+}
+
+.pl-id {
+    color: #b52a1d;
+}
+
+.pl-ii {
+    background-color: #b52a1d;
+    color: #f8f8f8;
+}
+
+.pl-sr .pl-cce {
+    color: #63a35c;
+    font-weight: bold;
+}
+
+.pl-ml {
+    color: #693a17;
+}
+
+.pl-mh,.pl-mh .pl-en,.pl-ms {
+    color: #1d3e81;
+    font-weight: bold;
+}
+
+.pl-mq {
+    color: #008080;
+}
+
+.pl-mi {
+    color: #333;
+    font-style: italic;
+}
+
+.pl-mb {
+    color: #333;
+    font-weight: bold;
+}
+
+.pl-md,.pl-mdhf {
+    background-color: #ffecec;
+    color: #bd2c00;
+}
+
+.pl-mdht,.pl-mi1 {
+    background-color: #eaffea;
+    color: #55a532;
+}
+
+.pl-mdr {
+    color: #795da3;
+    font-weight: bold;
+}
+
+.pl-mo {
+    color: #1d3e81;
+}
+.task-list {
+padding-left:10px;
+margin-bottom:0;
+}
+
+.task-list li {
+    margin-left: 20px;
+}
+
+.task-list-item {
+list-style-type:none;
+padding-left:10px;
+}
+
+.task-list-item label {
+font-weight:400;
+}
+
+.task-list-item.enabled label {
+cursor:pointer;
+}
+
+.task-list-item+.task-list-item {
+margin-top:3px;
+}
+
+.task-list-item-checkbox {
+display:inline-block;
+margin-left:-20px;
+margin-right:3px;
+vertical-align:1px;
+}
+</style>
+</head>
+<body>
+<h1 id="-">如何解析爬虫爬取回来的数据</h1>
+<ul>
+<li>1、HTML基础知识回顾</li><li>2、使用Document获取文本数据</li><li>3、使用Jsoup操作HTML文档<ul>
+<li>3.1、Jsoup 是什么？</li><li>3.2、JSOUP的核心功能</li><li>3.3、如何使用Jsoup选择器获取数据</li><li>3.4、Jsoup的maven依赖</li><li>3.5、HTML页面解析实战</li></ul>
+</li></ul>
+<h1 id="1-html-">1、HTML基础知识回顾</h1>
+<p>HTML知识回顾</p>
+<ul>
+<li>什么是 HTML？<ul>
+<li>HTML 指的是超文本标记语言 (Hyper Text Markup Language)，“超文本”就是指页面内可以包含图片、链接，甚至音乐、程序等非文字元素。</li><li>超文本标记语言的结构包括“头”部分（英语：Head）、和“主体”部分（英语：Body），其中“头”部提供关于网页的信息，“主体”部分提供网页的具体内容。</li></ul>
+</li><li><p>HTML的构成<br>  head 元素是所有头部元素的容器。<head> 内的元素可包含脚本，指示浏览器在何处可以找到样式表，提供元信息，等等。<br>以下标签都可以添加到 head 部分。<a href="http://www.w3school.com.cn/html/html_head.asp">更多信息</a></p>
+<ul>
+<li><p>HTML</p>
+<ul>
+<li><p>head</p>
+<ul>
+<li>title <ul>
+<li>定义浏览器工具栏中的标题</li><li>提供页面被添加到收藏夹时显示的标题</li><li>显示在搜索引擎结果中的页面标题</li></ul>
+</li><li>base<ul>
+<li>标签为页面上的所有链接规定默认地址或默认目标（target）<br>  <code>java &lt;base href=&quot;http://www.w3school.com.cn/images/&quot; /&gt; ``
+</code>java <base target="_blank" /> ```</li></ul>
+</li><li>link<ul>
+<li>定义文档与外部资源之间的关系</li><li>标签最常用于连接样式表</li><li><code>java &lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;mystyle.css&quot; /&gt;</code></li></ul>
+</li><li><p>meta</p>
+<ul>
+<li>元数据（metadata）是关于数据的信息</li><li>元数据总是以名称/值的形式被成对传递的</li><li>标签提供关于 HTML 文档的元数据。元数据不会显示在页面上，但是对于机器是可读的。</li><li><p>典型的情况是，meta 元素被用于规定页面的描述、关键词、文档的作者、最后修改时间以及其他元数据。</p>
+<ul>
+<li>http-equiv 服务器发送给服务器的标识<ul>
+<li>content-type 文档类型，<a href="http://tool.oschina.net/commons/">查看更多的content-type相关</a><pre><code>  所有服务器都**至少**要发送一个：content-type:text/html。这将告诉浏览器准备接受一个 HTML 文档。
+</code></pre></li><li>expires 文档过期时间<br>  <code>java &lt;meta http-equiv=&quot;expires&quot; content=&quot;31 Dec 2008&quot;&gt;</code></li><li>refresh 用于刷新与跳转(重定向)页面<ul>
+<li>5秒之后刷新本页面<br>  <code>java &lt;meta http-equiv=&quot;refresh&quot; content=&quot;5&quot; /&gt;</code></li><li>5秒之后转到<a href="http://www.itcast.cn">传智播客</a>首页<br>  <code>java &lt;meta http-equiv=&quot;refresh&quot; content=&quot;5; url=http://www.itcast.cn/&quot; /&gt;</code></li></ul>
+</li><li>set-cookie cookie设定，如果网页过期，存盘的cookie将被删除。需要注意的也是必须使用GMT时间格式；<br>  <code>java &lt;meta    http-equiv=&quot;set-cookie&quot;    contect=&quot;Mon,12    May    2001    00:20:00    GMT(格林尼治标准时间)&quot;&gt;</code>    </li><li>charset 文档编码格式<br>  <code>java &lt;meta http-equiv=&quot;charset&quot; content=&quot;iso-8859-1&quot;&gt;</code></li></ul>
+</li><li>name<ul>
+<li>author 告诉搜索引擎你的站点的制作的作者</li><li>description 告诉搜索引擎你的站点的主要内容</li><li>keywords 向搜索引擎说明你的网页的关键词</li><li>generator  用以说明生成工具</li><li>revised 定义页面的最新版本</li><li>others 其它</li></ul>
+</li><li><p>scheme </p>
+<ul>
+<li>some_text</li></ul>
+</li><li><p><strong>一些搜索引擎会利用 meta 元素的 name 和 content 属性来索引您的页面。</strong></p>
+</li></ul>
+</li></ul>
+</li><li>script<pre><code>  * 标签用于定义客户端脚本，比如 JavaScript。
+</code></pre></li><li>style<ul>
+<li>标签用于为 HTML 文档定义样式信息<br><code>java &lt;style type=&quot;text/css&quot;&gt; body {background-color:yellow} p {color:blue} &lt;/style&gt;</code></li></ul>
+</li></ul>
+</li><li>body</li></ul>
+</li><li>HTML</li></ul>
+</li></ul>
+<h1 id="2-document-">2、使用Document获取文本数据</h1>
+<ul>
+<li><p>Document是什么<br>每个载入浏览器的 HTML 文档都会成为 Document 对象。<br>Document 对象使我们可以从脚本中对 HTML 页面中的所有元素进行访问。</p>
+</li><li><p>Document 对象集合</p>
+<ul>
+<li>all[]    提供对文档中所有 HTML 元素的访问。</li><li>anchors[]    返回对文档中所有 Anchor 对象的引用。</li><li>applets    返回对文档中所有 Applet 对象的引用。</li><li>forms[]    返回对文档中所有 Form 对象引用。</li><li>images[]    返回对文档中所有 Image 对象引用。</li><li>links[]    返回对文档中所有 Area 和 Link 对象引用。</li></ul>
+</li><li><p>Document 对象属性</p>
+<ul>
+<li>body    提供对 <body> 元素的直接访问。 对于定义了框架集的文档，该属性引用最外层的 <frameset>。</li><li>cookie    设置或返回与当前文档有关的所有 cookie。</li><li>domain    返回当前文档的域名。</li><li>lastModified    返回文档被最后修改的日期和时间。</li><li>referrer    返回载入当前文档的文档的 URL。</li><li>title    返回当前文档的标题。</li><li>URL    返回当前文档的 URL。</li></ul>
+</li><li>Document 对象方法<ul>
+<li>close()    关闭用 document.open() 方法打开的输出流，并显示选定的数据。</li><li>getElementById()    返回对拥有指定 id 的第一个对象的引用。</li><li>getElementsByName()    返回带有指定名称的对象集合。</li><li>getElementsByTagName()    返回带有指定标签名的对象集合。</li><li>open()    打开一个流，以收集来自任何 document.write() 或 document.writeln() 方法的输出。</li><li>write()    向文档写 HTML 表达式 或 JavaScript 代码。</li><li>writeln()    等同于 write() 方法，不同的是在每个表达式之后写一个换行符。</li></ul>
+</li><li><strong>在Chrome Browse中操作Document</strong><br><img src="img/console.png" alt=""></li></ul>
+<h1 id="3-jsoup-html-">3、使用Jsoup操作HTML文档</h1>
+<h3 id="3-1-jsoup-">3.1、Jsoup 是什么？</h3>
+<p>jsoup 是一款Java 的HTML解析器，可直接解析某个URL地址、HTML文本内容。它提供了一套非常省力的API，可通过DOM，CSS以及类似于jQuery的操作方法来取出和操作数据。</p>
+<p><img src="img/jsoup.png" alt=""></p>
+<p><a href="https://jsoup.org/">官网地址</a></p>
+<h3 id="3-2-jsoup-">3.2、JSOUP的核心功能</h3>
+<ul>
+<li>JSOUP的输入信息<ul>
+<li>字符串</li><li>文件</li><li>URL</li></ul>
+</li><li>JSOUP抽取数据<ul>
+<li>使用Document语法进行解析数据</li><li>使用选择器的方式进行解析（学习对象）</li></ul>
+</li></ul>
+<h3 id="3-3-jsoup-">3.3、如何使用Jsoup选择器获取数据</h3>
+<p>jsoup elements对象支持类似于CSS(或jquery)的选择器语法，来实现非常强大和灵活的查找功能。.</p>
+<p>这个select方法在Document,Element,或Elements对象中都可以使用。且是上下文相关的，因此可实现指定元素的过滤，或者链式选择访问。</p>
+<p>Select方法将返回一个Elements集合，并提供一组方法来抽取和处理结果。</p>
+<ul>
+<li>Selector选择器概述<ul>
+<li>tagname: 通过标签查找元素，比如：a</li><li>ns|tag: 通过标签在命名空间查找元素，比如：可以用 fb|name 语法来查找 <fb:name> 元素</li><li>id: 通过ID查找元素，比如：#logo</li><li>class: 通过class名称查找元素，比如：.masthead</li><li>[attribute]: 利用属性查找元素，比如：[href]<ul>
+<li>[^attr]: 利用属性名前缀来查找元素，比如：可以用[^data-] 来查找带有HTML5 Dataset属性的元素</li><li>[attr=value]: 利用属性值来查找元素，比如：[width=500]</li><li>[attr^=value], [attr$=value], [attr<em>=value]: 利用匹配属性值开头、结尾或包含属性值来查找元素，比如：[href</em>=/path/]</li><li>[attr~=regex]: 利用属性值匹配正则表达式来查找元素，比如： img[src~=(?i).(png|jpe?g)]</li></ul>
+</li><li>*: 这个符号将匹配所有元素</li></ul>
+</li><li>Seector选择器组合使用<ul>
+<li>el#id: 元素+ID，比如： div#logo</li><li>el.class: 元素+class，比如： div.masthead</li><li>el[attr]: 元素+class，比如： a[href]</li><li>任意组合，比如：a[href].highlight</li><li>ancestor child: 查找某个元素下子元素，比如：可以用.body p 查找在&quot;body&quot;元素下的所有 p元素</li><li>parent &gt; child: 查找某个父元素下的直接子元素，比如：可以用div.content &gt; p 查找 p 元素，也可以用body &gt; * 查找body标签下所有直接子元素</li><li>siblingA + siblingB: 查找在A元素之前第一个同级元素B，比如：div.head + div</li><li>siblingA ~ siblingX: 查找A元素之前的同级X元素，比如：h1 ~ p</li><li>el, el, el:多个选择器组合，查找匹配任一选择器的唯一元素，例如：div.masthead, div.logo</li></ul>
+</li><li>伪选器selectors<ul>
+<li>:lt(n): 查找哪些元素的同级索引值（它的位置在DOM树中是相对于它的父节点）小于n，比如：td:lt(3) 表示小于三列的元素</li><li>:gt(n):查找哪些元素的同级索引值大于n，比如： div p:gt(2)表示哪些div中有包含2个以上的p元素</li><li>:eq(n): 查找哪些元素的同级索引值与n相等，比如：form input:eq(1)表示包含一个input标签的Form元素</li><li>:has(seletor): 查找匹配选择器包含元素的元素，比如：div:has(p)表示哪些div包含了p元素</li><li>:not(selector): 查找与选择器不匹配的元素，比如： div:not(.logo) 表示不包含 class=logo 元素的所有 div 列表</li><li>:contains(text): 查找包含给定文本的元素，搜索不区分大不写，比如： p:contains(jsoup)</li><li>:containsOwn(text): 查找直接包含给定文本的元素</li><li>:matches(regex): 查找哪些元素的文本匹配指定的正则表达式，比如：div:matches((?i)login)</li><li>:matchesOwn(regex): 查找自身包含文本匹配指定正则表达式的元素</li><li>注意：上述伪选择器索引是从0开始的，也就是说第一个元素索引值为0，第二个元素index为1等</li></ul>
+</li></ul>
+<h3 id="3-4-jsoup-maven-">3.4、Jsoup的maven依赖</h3>
+<pre><code class="lang-java">&lt;dependency&gt;
+  &lt;!-- jsoup HTML parser library @ https://jsoup.org/ --&gt;
+  &lt;groupId&gt;org.jsoup&lt;/groupId&gt;
+  &lt;artifactId&gt;jsoup&lt;/artifactId&gt;
+  &lt;version&gt;1.10.3&lt;/version&gt;
+&lt;/dependency&gt;
+</code></pre>
+<h3 id="3-5-html-">3.5、HTML页面解析实战</h3>
+<pre><code class="lang-java">package cn.itcast.sspc.base;
+
+import java.nio.charset.Charset;
+
+import org.apache.http.client.fluent.Request;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
+/**
+ * 使用Jsoup解析网页数据 
+ */
+public class JsoupTest {
+
+    public static void main(String[] args) throws Exception {
+        // 1、准备数据
+        String html = Request.Get(&quot;http://www.itcast.cn&quot;).execute().returnContent().asString(Charset.forName(&quot;utf-8&quot;));
+
+        // 2、使用Jsoup获取一个docment对象
+        Document doc = Jsoup.parse(html);
+        // 3、解析数据
+        // 3.1 获取的标题
+        String title = doc.title();
+        System.out.println(title);
+        // 3.2 获取所有的a标签
+        Elements els = doc.select(&quot;a&quot;);
+        // 3.4 获取所有的class
+        els = doc.select(&quot;.icon_fuli&quot;);
+
+        //3.5 获取有某个属性的所有标签
+        els  = doc.select(&quot;[style]&quot;);
+        //3.5.1 匹配某个属性的前缀来查询
+        els  = doc.select(&quot;[^s]&quot;);
+        //3.5.2 判断属性值等于xxx
+        els = doc.select(&quot;[href=/channel/flow.shtml]&quot;);
+
+        //4、组合选择器
+        els = doc.select(&quot;div.fast_path&quot;);
+        //5、找某个模块下的a标签
+        els = doc.select(&quot;div.fast_path a&quot;);
+        for(Element el : els){
+            System.out.println(el);
+        }
+
+    }
+
+}
+</code></pre>
+
+</body>
+</html>
+<!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->

@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>3-Solr cloud安装部署</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+/* GitHub stylesheet for MarkdownPad (http://markdownpad.com) */
+/* Author: Nicolas Hery - http://nicolashery.com */
+/* Version: b13fe65ca28d2e568c6ed5d7f06581183df8f2ff */
+/* Source: https://github.com/nicolahery/markdownpad-github */
+
+/* RESET
+=============================================================================*/
+
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* BODY
+=============================================================================*/
+
+body {
+  font-family: Helvetica, arial, freesans, clean, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
+  background-color: #fff;
+  padding: 20px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+body>*:first-child {
+  margin-top: 0 !important;
+}
+
+body>*:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* BLOCKS
+=============================================================================*/
+
+p, blockquote, ul, ol, dl, table, pre {
+  margin: 15px 0;
+}
+
+/* HEADERS
+=============================================================================*/
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 20px 0 10px;
+  padding: 0;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 tt, h1 code, h2 tt, h2 code, h3 tt, h3 code, h4 tt, h4 code, h5 tt, h5 code, h6 tt, h6 code {
+  font-size: inherit;
+}
+
+h1 {
+  font-size: 28px;
+  color: #000;
+}
+
+h2 {
+  font-size: 24px;
+  border-bottom: 1px solid #ccc;
+  color: #000;
+}
+
+h3 {
+  font-size: 18px;
+}
+
+h4 {
+  font-size: 16px;
+}
+
+h5 {
+  font-size: 14px;
+}
+
+h6 {
+  color: #777;
+  font-size: 14px;
+}
+
+body>h2:first-child, body>h1:first-child, body>h1:first-child+h2, body>h3:first-child, body>h4:first-child, body>h5:first-child, body>h6:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+h1+p, h2+p, h3+p, h4+p, h5+p, h6+p {
+  margin-top: 10px;
+}
+
+/* LINKS
+=============================================================================*/
+
+a {
+  color: #4183C4;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* LISTS
+=============================================================================*/
+
+ul, ol {
+  padding-left: 30px;
+}
+
+ul li > :first-child, 
+ol li > :first-child, 
+ul li ul:first-of-type, 
+ol li ol:first-of-type, 
+ul li ol:first-of-type, 
+ol li ul:first-of-type {
+  margin-top: 0px;
+}
+
+ul ul, ul ol, ol ol, ol ul {
+  margin-bottom: 0;
+}
+
+dl {
+  padding: 0;
+}
+
+dl dt {
+  font-size: 14px;
+  font-weight: bold;
+  font-style: italic;
+  padding: 0;
+  margin: 15px 0 5px;
+}
+
+dl dt:first-child {
+  padding: 0;
+}
+
+dl dt>:first-child {
+  margin-top: 0px;
+}
+
+dl dt>:last-child {
+  margin-bottom: 0px;
+}
+
+dl dd {
+  margin: 0 0 15px;
+  padding: 0 15px;
+}
+
+dl dd>:first-child {
+  margin-top: 0px;
+}
+
+dl dd>:last-child {
+  margin-bottom: 0px;
+}
+
+/* CODE
+=============================================================================*/
+
+pre, code, tt {
+  font-size: 12px;
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
+}
+
+code, tt {
+  margin: 0 0px;
+  padding: 0px 0px;
+  white-space: nowrap;
+  border: 1px solid #eaeaea;
+  background-color: #f8f8f8;
+  border-radius: 3px;
+}
+
+pre>code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent;
+}
+
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px;
+}
+
+pre code, pre tt {
+  background-color: transparent;
+  border: none;
+}
+
+kbd {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #DDDDDD;
+    background-image: linear-gradient(#F1F1F1, #DDDDDD);
+    background-repeat: repeat-x;
+    border-color: #DDDDDD #CCCCCC #CCCCCC #DDDDDD;
+    border-image: none;
+    border-radius: 2px 2px 2px 2px;
+    border-style: solid;
+    border-width: 1px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    line-height: 10px;
+    padding: 1px 4px;
+}
+
+/* QUOTES
+=============================================================================*/
+
+blockquote {
+  border-left: 4px solid #DDD;
+  padding: 0 15px;
+  color: #777;
+}
+
+blockquote>:first-child {
+  margin-top: 0px;
+}
+
+blockquote>:last-child {
+  margin-bottom: 0px;
+}
+
+/* HORIZONTAL RULES
+=============================================================================*/
+
+hr {
+  clear: both;
+  margin: 15px 0;
+  height: 0px;
+  overflow: hidden;
+  border: none;
+  background: transparent;
+  border-bottom: 4px solid #ddd;
+  padding: 0;
+}
+
+/* TABLES
+=============================================================================*/
+
+table th {
+  font-weight: bold;
+}
+
+table th, table td {
+  border: 1px solid #ccc;
+  padding: 6px 13px;
+}
+
+table tr {
+  border-top: 1px solid #ccc;
+  background-color: #fff;
+}
+
+table tr:nth-child(2n) {
+  background-color: #f8f8f8;
+}
+
+/* IMAGES
+=============================================================================*/
+
+img {
+  max-width: 100%
+}
+</style>
+<style type="text/css">
+.highlight  { background: #ffffff; }
+.highlight .c { color: #999988; font-style: italic } /* Comment */
+.highlight .err { color: #a61717; background-color: #e3d2d2 } /* Error */
+.highlight .k { font-weight: bold } /* Keyword */
+.highlight .o { font-weight: bold } /* Operator */
+.highlight .cm { color: #999988; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #999999; font-weight: bold } /* Comment.Preproc */
+.highlight .c1 { color: #999988; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #999999; font-weight: bold; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #000000; background-color: #ffdddd } /* Generic.Deleted */
+.highlight .gd .x { color: #000000; background-color: #ffaaaa } /* Generic.Deleted.Specific */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .gr { color: #aa0000 } /* Generic.Error */
+.highlight .gh { color: #999999 } /* Generic.Heading */
+.highlight .gi { color: #000000; background-color: #ddffdd } /* Generic.Inserted */
+.highlight .gi .x { color: #000000; background-color: #aaffaa } /* Generic.Inserted.Specific */
+.highlight .go { color: #888888 } /* Generic.Output */
+.highlight .gp { color: #555555 } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #aaaaaa } /* Generic.Subheading */
+.highlight .gt { color: #aa0000 } /* Generic.Traceback */
+.highlight .kc { font-weight: bold } /* Keyword.Constant */
+.highlight .kd { font-weight: bold } /* Keyword.Declaration */
+.highlight .kp { font-weight: bold } /* Keyword.Pseudo */
+.highlight .kr { font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #445588; font-weight: bold } /* Keyword.Type */
+.highlight .m { color: #009999 } /* Literal.Number */
+.highlight .s { color: #d14 } /* Literal.String */
+.highlight .na { color: #008080 } /* Name.Attribute */
+.highlight .nb { color: #0086B3 } /* Name.Builtin */
+.highlight .nc { color: #445588; font-weight: bold } /* Name.Class */
+.highlight .no { color: #008080 } /* Name.Constant */
+.highlight .ni { color: #800080 } /* Name.Entity */
+.highlight .ne { color: #990000; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #990000; font-weight: bold } /* Name.Function */
+.highlight .nn { color: #555555 } /* Name.Namespace */
+.highlight .nt { color: #000080 } /* Name.Tag */
+.highlight .nv { color: #008080 } /* Name.Variable */
+.highlight .ow { font-weight: bold } /* Operator.Word */
+.highlight .w { color: #bbbbbb } /* Text.Whitespace */
+.highlight .mf { color: #009999 } /* Literal.Number.Float */
+.highlight .mh { color: #009999 } /* Literal.Number.Hex */
+.highlight .mi { color: #009999 } /* Literal.Number.Integer */
+.highlight .mo { color: #009999 } /* Literal.Number.Oct */
+.highlight .sb { color: #d14 } /* Literal.String.Backtick */
+.highlight .sc { color: #d14 } /* Literal.String.Char */
+.highlight .sd { color: #d14 } /* Literal.String.Doc */
+.highlight .s2 { color: #d14 } /* Literal.String.Double */
+.highlight .se { color: #d14 } /* Literal.String.Escape */
+.highlight .sh { color: #d14 } /* Literal.String.Heredoc */
+.highlight .si { color: #d14 } /* Literal.String.Interpol */
+.highlight .sx { color: #d14 } /* Literal.String.Other */
+.highlight .sr { color: #009926 } /* Literal.String.Regex */
+.highlight .s1 { color: #d14 } /* Literal.String.Single */
+.highlight .ss { color: #990073 } /* Literal.String.Symbol */
+.highlight .bp { color: #999999 } /* Name.Builtin.Pseudo */
+.highlight .vc { color: #008080 } /* Name.Variable.Class */
+.highlight .vg { color: #008080 } /* Name.Variable.Global */
+.highlight .vi { color: #008080 } /* Name.Variable.Instance */
+.highlight .il { color: #009999 } /* Literal.Number.Integer.Long */
+.pl-c {
+    color: #969896;
+}
+
+.pl-c1,.pl-mdh,.pl-mm,.pl-mp,.pl-mr,.pl-s1 .pl-v,.pl-s3,.pl-sc,.pl-sv {
+    color: #0086b3;
+}
+
+.pl-e,.pl-en {
+    color: #795da3;
+}
+
+.pl-s1 .pl-s2,.pl-smi,.pl-smp,.pl-stj,.pl-vo,.pl-vpf {
+    color: #333;
+}
+
+.pl-ent {
+    color: #63a35c;
+}
+
+.pl-k,.pl-s,.pl-st {
+    color: #a71d5d;
+}
+
+.pl-pds,.pl-s1,.pl-s1 .pl-pse .pl-s2,.pl-sr,.pl-sr .pl-cce,.pl-sr .pl-sra,.pl-sr .pl-sre,.pl-src,.pl-v {
+    color: #df5000;
+}
+
+.pl-id {
+    color: #b52a1d;
+}
+
+.pl-ii {
+    background-color: #b52a1d;
+    color: #f8f8f8;
+}
+
+.pl-sr .pl-cce {
+    color: #63a35c;
+    font-weight: bold;
+}
+
+.pl-ml {
+    color: #693a17;
+}
+
+.pl-mh,.pl-mh .pl-en,.pl-ms {
+    color: #1d3e81;
+    font-weight: bold;
+}
+
+.pl-mq {
+    color: #008080;
+}
+
+.pl-mi {
+    color: #333;
+    font-style: italic;
+}
+
+.pl-mb {
+    color: #333;
+    font-weight: bold;
+}
+
+.pl-md,.pl-mdhf {
+    background-color: #ffecec;
+    color: #bd2c00;
+}
+
+.pl-mdht,.pl-mi1 {
+    background-color: #eaffea;
+    color: #55a532;
+}
+
+.pl-mdr {
+    color: #795da3;
+    font-weight: bold;
+}
+
+.pl-mo {
+    color: #1d3e81;
+}
+.task-list {
+padding-left:10px;
+margin-bottom:0;
+}
+
+.task-list li {
+    margin-left: 20px;
+}
+
+.task-list-item {
+list-style-type:none;
+padding-left:10px;
+}
+
+.task-list-item label {
+font-weight:400;
+}
+
+.task-list-item.enabled label {
+cursor:pointer;
+}
+
+.task-list-item+.task-list-item {
+margin-top:3px;
+}
+
+.task-list-item-checkbox {
+display:inline-block;
+margin-left:-20px;
+margin-right:3px;
+vertical-align:1px;
+}
+</style>
+</head>
+<body>
+<h1 id="solr-cloud-">Solr cloud部署实践</h1>
+<p>第一部分：初始化环境</p>
+<ul>
+<li>1、初始化环境 </li><li>2、准备solr安装包</li><li>3、解压安装包</li><li>4、创建solr的工作目录</li><li>5、tomcat 软连接创建</li><li>6、没有6</li></ul>
+<p>第二部分：在Linux上部署单机版本的solr</p>
+<ul>
+<li>7、将solr.war包拷贝到tomcat的webapps下</li><li>8、启动下tomcat，让tomcat帮解压solr.war，然后关闭tomcat</li><li>9、修改solr web项目的配置文件，指定solrhome</li><li>10、拷贝一个solr core到solr_home下</li><li>11、为solr的运行准备配置lib</li><li>12、修改collection1 的solrconfig.xml文件，配置lib路径</li><li>13、将ext扩展的jar包拷贝到solr的web项目下</li><li>14、启动solr</li><li>15、访问单机版本的solr服务</li></ul>
+<p>第三部分：配置集群</p>
+<ul>
+<li>16、梳理修改了哪些目录</li><li>17、在其他机器上创建工作目录</li><li>18、拷贝安装内容到其它机器</li><li>19、启动zookeeper集群</li><li>20、将solr的配置文件上传到zookeeper</li><li>21、检查配置文件是否上传到zookeeper上</li><li>22、修改集群中每个solr的solr.xml文件</li><li>23、让solr和zookeeper产生关系</li><li>24、依次启动tomcat,配置完成</li></ul>
+<p>第四部分：配置新的集群</p>
+<ul>
+<li>25、配置命令</li><li>26、命令说明</li><li>27、配置效果</li></ul>
+<h1 id="-">第一部分：初始化环境</h1>
+<hr>
+<h4 id="1-">1、初始化环境</h4>
+<ul>
+<li>准备三台linux服务器<ul>
+<li>创建虚拟机三台虚拟机器，并修改主机名称<ul>
+<li>修改主机名称有两种方式<ul>
+<li>固定：vi /etc/sysconf/network</li><li>临时：hostanme 主机名称</li></ul>
+</li></ul>
+</li><li>配置hosts内容<ul>
+<li>vi /etc/hosts<pre><code class="lang-shell">192.168.239.128 node1
+192.168.239.129 node2
+192.168.239.130 node3
+</code></pre>
+</li></ul>
+</li></ul>
+</li><li>在服务器上创建三个目录<ul>
+<li>software目录:software目录是用来存放软件安装包<pre><code class="lang-shell">mkdir -p /export/software
+</code></pre>
+</li><li>servers目录：servers目录用来用来安装软件<pre><code class="lang-shell">mkdir -p /export/servers
+</code></pre>
+</li><li>data目录：data目录用来存放软件运行的数据、日志<pre><code class="lang-shell">mkdir -p /export/data
+</code></pre>
+</li></ul>
+</li><li>关闭三台机器的防火墙<ul>
+<li>永久关闭，需要重启<pre><code class="lang-shell">chkconfig iptables off
+</code></pre>
+</li><li>临时管理，重启失效<pre><code class="lang-shell">service iptables stop
+</code></pre>
+</li><li>关闭之后可查看防火墙状态<pre><code class="lang-shell">service iptables status
+</code></pre>
+</li></ul>
+</li></ul>
+<h4 id="2-solr-">2、准备solr安装包</h4>
+<ul>
+<li>上传solr-4.10.2的安装包 到 /export/software 目录</li><li>上传 tomcat-</li></ul>
+<h4 id="3-">3、解压安装包</h4>
+<ul>
+<li>解压solr<pre><code class="lang-shell">tar -zxvf solr-4.10.2.tgz -C /export/servers/
+</code></pre>
+</li><li>解压 tomcat<pre><code class="lang-shell">tar -zxvf apache-tomcat-7.0.57.tar.gz -C /export/servers/
+</code></pre>
+</li></ul>
+<h4 id="4-solr-">4、创建solr的工作目录</h4>
+<pre><code class="lang-shell">mkdir -p /export/data/solr_home
+</code></pre>
+<h4 id="5-tomcat-">5、tomcat 软连接创建</h4>
+<pre><code class="lang-shell">ln -s apache-tomcat-7.0.57/ tomcat4solr
+</code></pre>
+<h4 id="6-6">6、没有6</h4>
+<h1 id="-linux-solr">第二部分：在Linux上部署单机版本的solr</h1>
+<hr>
+<h4 id="7-solr-war-tomcat-webapps-">7、将solr.war包拷贝到tomcat的webapps下</h4>
+<pre><code class="lang-shell">cd /export/servers/solr-4.10.2/example/webapps
+cp solr.war /export/servers/tomcat4solr/webapps/
+</code></pre>
+<h4 id="8-tomcat-tomcat-solr-war-tomcat">8、启动下tomcat，让tomcat帮解压solr.war，然后关闭tomcat</h4>
+<pre><code class="lang-shell">cd /export/servers/tomcat4solr/bin/
+./startup.sh 
+./shutdown.sh
+</code></pre>
+<h4 id="9-solr-web-solrhome">9、修改solr web项目的配置文件，指定solrhome</h4>
+<pre><code class="lang-shell">cd /export/servers/tomcat4solr/webapps/solr/WEB-INF/
+vi web.xml
+</code></pre>
+<p>修改内容,并保存。<br><img src="img/2017-09-04_113443.png" alt=""></p>
+<ul>
+<li>第一步 去掉注释</li><li>第二步 修改 env-entry-type 为 /export/data/solr_home</li></ul>
+<h4 id="9-1-solr-">9.1、拷贝扩展包到solr项目中</h4>
+<pre><code class="lang-shell"> cp /export/servers/solr-4.10.2/example/lib/ext/* /export/servers/apache-tomcat-7.0.57/webapps/solr/WEB-INF/lib/
+</code></pre>
+<h4 id="10-solr-core-solr_home-">10、拷贝一个solr core到solr_home下</h4>
+<pre><code class="lang-shell">cd /export/servers/solr-4.10.2/example/solr
+cp -r collection1/ /export/data/solr_home/
+</code></pre>
+<h4 id="11-solr-lib">11、为solr的运行准备配置lib</h4>
+<ul>
+<li>先创建lib目录<pre><code class="lang-shell">cd /export/data/solr_home/
+mkdir lib
+</code></pre>
+</li><li>然后将依赖拷贝过来<pre><code>cd lib/
+cp -r /export/servers/solr-4.10.2/contrib/ .
+cp -r /export/servers/solr-4.10.2/dist/ .
+</code></pre></li></ul>
+<h4 id="12-collection1-solrconfig-xml-lib-">12、修改collection1 的solrconfig.xml文件，配置lib路径</h4>
+<pre><code class="lang-shell">cd /export/data/solr_home/collection1/conf
+vi solrconfig.xml
+</code></pre>
+<ul>
+<li>原始内容<br><img src="img/2017-09-04_114738.png" alt=""></li><li>修改后的内容<br><img src="img/2017-09-04_115014.png" alt=""></li></ul>
+<h4 id="13-ext-jar-solr-web-">13、将ext扩展的jar包拷贝到solr的web项目下</h4>
+<pre><code class="lang-shell">cd /export/servers/tomcat4solr/webapps/solr/WEB-INF/lib/
+cp -r /export/servers/solr-4.10.2/example/lib/ext/* .
+</code></pre>
+<h4 id="14-solr">14、启动solr</h4>
+<p>启动solr即使启动tomcat</p>
+<pre><code class="lang-shell">cd /export/servers/tomcat4solr/bin
+./startup.sh
+</code></pre>
+<h4 id="15-solr-">15、访问单机版本的solr服务</h4>
+<pre><code class="lang-shell">http://{u solr hostname}:8080/solr
+</code></pre>
+<h1 id="-">第三部分:配置集群</h1>
+<h4 id="16-">16、梳理修改了哪些目录</h4>
+<ul>
+<li>三个标准目录<ul>
+<li>/export/data/    </li><li>/export/servers/</li><li>/export/software/</li></ul>
+</li><li>安装目录<ul>
+<li>/export/data/solr_home</li><li>/export/servers/tomcat4solr</li></ul>
+</li></ul>
+<p>总结，需要将两个solr的安装目录拷贝到其他机器上。</p>
+<h4 id="17-">17、在其他机器上创建工作目录</h4>
+<p>在hadoop02上操作</p>
+<pre><code class="lang-shell">mkdir -p /export/data/solr_home
+mkdir -p /export/servers/tomcat4solr
+</code></pre>
+<p>在hadoop03上操作</p>
+<pre><code class="lang-shell">mkdir -p /export/data/solr_home
+mkdir -p /export/servers/tomcat4solr
+</code></pre>
+<h4 id="18-">18、拷贝安装内容到其它机器</h4>
+<p>在hadoop01上执行</p>
+<pre><code>scp -r /export/data/solr_home/* hadoop02:/export/data/solr_home/
+scp -r /export/servers/tomcat4solr/* hadoop02:/export/servers/tomcat4solr/
+
+scp -r /export/data/solr_home/* hadoop03:/export/data/solr_home/
+scp -r /export/servers/tomcat4solr/* hadoop03:/export/servers/tomcat4solr/
+</code></pre><p>问题，如果scp命令出错，就安装一个软件。</p>
+<pre><code class="lang-shell">yum install openssh-clients -y
+</code></pre>
+<h4 id="19-zookeeper-">19、启动zookeeper集群</h4>
+<h4 id="20-solr-zookeeper">20、将solr的配置文件上传到zookeeper</h4>
+<p>主要是solrconfig.xml和scheme.xml、</p>
+<pre><code class="lang-shell">cd /export/servers/solr-4.10.2/example/scripts/cloud-scripts
+
+./zkcli.sh -zkhost zk01:2181,zk02:2181,zk03:2181 -cmd upconfig -confdir /export/data/solr_home/collection1/conf/ -confname solrconf
+</code></pre>
+<p>如果出现unzip的错误，直接安装unzip的包</p>
+<pre><code class="lang-shell">yum install -y unzip
+</code></pre>
+<h4 id="21-zookeeper-">21、检查配置文件是否上传到zookeeper上</h4>
+<p>使用zookeeper的客户端命令查看zookeeper的目录树</p>
+<pre><code class="lang-shell">zkCli.sh
+</code></pre>
+<p><img src="img/2017-09-04_141325.png" alt=""></p>
+<h4 id="22-solr-solr-xml-">22、修改集群中每个solr的solr.xml文件</h4>
+<ul>
+<li><p>修改配置文件</p>
+<pre><code class="lang-shell">cp /export/servers/solr-4.10.2/example/solr/solr.xml /export/data/solr_home/
+cd /export/data/solr_home/
+vi
+</code></pre>
+<p><img src="img/2017-09-04_141937.png" alt=""></p>
+</li><li><p>发送给其他节点</p>
+<pre><code class="lang-shell">scp solr.xml hadoop02:$PWD
+scp solr.xml hadoop03:$PWD
+</code></pre>
+</li></ul>
+<h4 id="23-solr-zookeeper-">23、让solr和zookeeper产生关系</h4>
+<p>修改每一台solr的tomcat 的 bin目录下catalina.sh文件中加入DzkHost指定zookeeper服务器地址。</p>
+<pre><code class="lang-shell">cd /export/servers/tomcat4solr/bin
+vi catalina.sh
+
+export JAVA_OPTS=&quot;-DzkHost=zk01:2181,zk02:2181,zk03:2181&quot;
+</code></pre>
+<p><img src="img/2017-09-04_142557.png" alt=""></p>
+<p>然后分发到到其它机器上</p>
+<pre><code class="lang-shell">scp catalina.sh hadoop02:$PWD
+scp catalina.sh hadoop03:$PWD
+</code></pre>
+<h4 id="24-tomcat">24、依次启动tomcat</h4>
+<p>在hadoop01上</p>
+<pre><code class="lang-shell">cd /export/servers/tomcat4solr/bin
+./startup.sh
+</code></pre>
+<p>在hadoop02上</p>
+<pre><code class="lang-shell">cd /export/servers/tomcat4solr/bin
+./startup.sh
+</code></pre>
+<p>在hadoop03上</p>
+<pre><code class="lang-shell">cd /export/servers/tomcat4solr/bin
+./startup.sh
+</code></pre>
+<p>然后访问任意一台solr服务，可以看到集群配置成功。</p>
+<p><img src="img/2017-09-04_143103.png" alt=""></p>
+<h1 id="-">第四部分：配置新的集群</h1>
+<hr>
+<h1 id="25-">25、配置命令</h1>
+<pre><code class="lang-shell">http://hadoop01:8080/solr/admin/collections?action=CREATE&amp;name=mycore2&amp;numShards=2&amp;replicationFactor=2&amp;maxShardsPerNode=8&amp;property.schema=schema.xml&amp;property.config=solrconfig.xml
+</code></pre>
+<h1 id="26-">26、命令说明</h1>
+<pre><code class="lang-shell">name指明collection名称
+numShards指明分片数
+replicationFactor指明副本数
+maxShardsPerNode 每个节点最大分片数（默认为1）
+property.schema：指定使用的schema.xml，这个文件必须在zookeeper上。
+property.config：指定使用的solrconfig.xml，这个文件必须在zookeeper上。
+</code></pre>
+<h1 id="27-">27、执行效果</h1>
+<p><img src="img/2017-09-04_143654.png" alt=""></p>
+<p>查看cloud管理界面：</p>
+<p><img src="img/2017-09-04_143945.png" alt=""></p>
+
+</body>
+</html>
+<!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->

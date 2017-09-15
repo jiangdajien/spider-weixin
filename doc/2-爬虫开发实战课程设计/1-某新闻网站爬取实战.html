@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>1-某新闻网站爬取实战</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+/* GitHub stylesheet for MarkdownPad (http://markdownpad.com) */
+/* Author: Nicolas Hery - http://nicolashery.com */
+/* Version: b13fe65ca28d2e568c6ed5d7f06581183df8f2ff */
+/* Source: https://github.com/nicolahery/markdownpad-github */
+
+/* RESET
+=============================================================================*/
+
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* BODY
+=============================================================================*/
+
+body {
+  font-family: Helvetica, arial, freesans, clean, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
+  background-color: #fff;
+  padding: 20px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+body>*:first-child {
+  margin-top: 0 !important;
+}
+
+body>*:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* BLOCKS
+=============================================================================*/
+
+p, blockquote, ul, ol, dl, table, pre {
+  margin: 15px 0;
+}
+
+/* HEADERS
+=============================================================================*/
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 20px 0 10px;
+  padding: 0;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 tt, h1 code, h2 tt, h2 code, h3 tt, h3 code, h4 tt, h4 code, h5 tt, h5 code, h6 tt, h6 code {
+  font-size: inherit;
+}
+
+h1 {
+  font-size: 28px;
+  color: #000;
+}
+
+h2 {
+  font-size: 24px;
+  border-bottom: 1px solid #ccc;
+  color: #000;
+}
+
+h3 {
+  font-size: 18px;
+}
+
+h4 {
+  font-size: 16px;
+}
+
+h5 {
+  font-size: 14px;
+}
+
+h6 {
+  color: #777;
+  font-size: 14px;
+}
+
+body>h2:first-child, body>h1:first-child, body>h1:first-child+h2, body>h3:first-child, body>h4:first-child, body>h5:first-child, body>h6:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+h1+p, h2+p, h3+p, h4+p, h5+p, h6+p {
+  margin-top: 10px;
+}
+
+/* LINKS
+=============================================================================*/
+
+a {
+  color: #4183C4;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* LISTS
+=============================================================================*/
+
+ul, ol {
+  padding-left: 30px;
+}
+
+ul li > :first-child, 
+ol li > :first-child, 
+ul li ul:first-of-type, 
+ol li ol:first-of-type, 
+ul li ol:first-of-type, 
+ol li ul:first-of-type {
+  margin-top: 0px;
+}
+
+ul ul, ul ol, ol ol, ol ul {
+  margin-bottom: 0;
+}
+
+dl {
+  padding: 0;
+}
+
+dl dt {
+  font-size: 14px;
+  font-weight: bold;
+  font-style: italic;
+  padding: 0;
+  margin: 15px 0 5px;
+}
+
+dl dt:first-child {
+  padding: 0;
+}
+
+dl dt>:first-child {
+  margin-top: 0px;
+}
+
+dl dt>:last-child {
+  margin-bottom: 0px;
+}
+
+dl dd {
+  margin: 0 0 15px;
+  padding: 0 15px;
+}
+
+dl dd>:first-child {
+  margin-top: 0px;
+}
+
+dl dd>:last-child {
+  margin-bottom: 0px;
+}
+
+/* CODE
+=============================================================================*/
+
+pre, code, tt {
+  font-size: 12px;
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
+}
+
+code, tt {
+  margin: 0 0px;
+  padding: 0px 0px;
+  white-space: nowrap;
+  border: 1px solid #eaeaea;
+  background-color: #f8f8f8;
+  border-radius: 3px;
+}
+
+pre>code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent;
+}
+
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px;
+}
+
+pre code, pre tt {
+  background-color: transparent;
+  border: none;
+}
+
+kbd {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #DDDDDD;
+    background-image: linear-gradient(#F1F1F1, #DDDDDD);
+    background-repeat: repeat-x;
+    border-color: #DDDDDD #CCCCCC #CCCCCC #DDDDDD;
+    border-image: none;
+    border-radius: 2px 2px 2px 2px;
+    border-style: solid;
+    border-width: 1px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    line-height: 10px;
+    padding: 1px 4px;
+}
+
+/* QUOTES
+=============================================================================*/
+
+blockquote {
+  border-left: 4px solid #DDD;
+  padding: 0 15px;
+  color: #777;
+}
+
+blockquote>:first-child {
+  margin-top: 0px;
+}
+
+blockquote>:last-child {
+  margin-bottom: 0px;
+}
+
+/* HORIZONTAL RULES
+=============================================================================*/
+
+hr {
+  clear: both;
+  margin: 15px 0;
+  height: 0px;
+  overflow: hidden;
+  border: none;
+  background: transparent;
+  border-bottom: 4px solid #ddd;
+  padding: 0;
+}
+
+/* TABLES
+=============================================================================*/
+
+table th {
+  font-weight: bold;
+}
+
+table th, table td {
+  border: 1px solid #ccc;
+  padding: 6px 13px;
+}
+
+table tr {
+  border-top: 1px solid #ccc;
+  background-color: #fff;
+}
+
+table tr:nth-child(2n) {
+  background-color: #f8f8f8;
+}
+
+/* IMAGES
+=============================================================================*/
+
+img {
+  max-width: 100%
+}
+</style>
+<style type="text/css">
+.highlight  { background: #ffffff; }
+.highlight .c { color: #999988; font-style: italic } /* Comment */
+.highlight .err { color: #a61717; background-color: #e3d2d2 } /* Error */
+.highlight .k { font-weight: bold } /* Keyword */
+.highlight .o { font-weight: bold } /* Operator */
+.highlight .cm { color: #999988; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #999999; font-weight: bold } /* Comment.Preproc */
+.highlight .c1 { color: #999988; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #999999; font-weight: bold; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #000000; background-color: #ffdddd } /* Generic.Deleted */
+.highlight .gd .x { color: #000000; background-color: #ffaaaa } /* Generic.Deleted.Specific */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .gr { color: #aa0000 } /* Generic.Error */
+.highlight .gh { color: #999999 } /* Generic.Heading */
+.highlight .gi { color: #000000; background-color: #ddffdd } /* Generic.Inserted */
+.highlight .gi .x { color: #000000; background-color: #aaffaa } /* Generic.Inserted.Specific */
+.highlight .go { color: #888888 } /* Generic.Output */
+.highlight .gp { color: #555555 } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #aaaaaa } /* Generic.Subheading */
+.highlight .gt { color: #aa0000 } /* Generic.Traceback */
+.highlight .kc { font-weight: bold } /* Keyword.Constant */
+.highlight .kd { font-weight: bold } /* Keyword.Declaration */
+.highlight .kp { font-weight: bold } /* Keyword.Pseudo */
+.highlight .kr { font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #445588; font-weight: bold } /* Keyword.Type */
+.highlight .m { color: #009999 } /* Literal.Number */
+.highlight .s { color: #d14 } /* Literal.String */
+.highlight .na { color: #008080 } /* Name.Attribute */
+.highlight .nb { color: #0086B3 } /* Name.Builtin */
+.highlight .nc { color: #445588; font-weight: bold } /* Name.Class */
+.highlight .no { color: #008080 } /* Name.Constant */
+.highlight .ni { color: #800080 } /* Name.Entity */
+.highlight .ne { color: #990000; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #990000; font-weight: bold } /* Name.Function */
+.highlight .nn { color: #555555 } /* Name.Namespace */
+.highlight .nt { color: #000080 } /* Name.Tag */
+.highlight .nv { color: #008080 } /* Name.Variable */
+.highlight .ow { font-weight: bold } /* Operator.Word */
+.highlight .w { color: #bbbbbb } /* Text.Whitespace */
+.highlight .mf { color: #009999 } /* Literal.Number.Float */
+.highlight .mh { color: #009999 } /* Literal.Number.Hex */
+.highlight .mi { color: #009999 } /* Literal.Number.Integer */
+.highlight .mo { color: #009999 } /* Literal.Number.Oct */
+.highlight .sb { color: #d14 } /* Literal.String.Backtick */
+.highlight .sc { color: #d14 } /* Literal.String.Char */
+.highlight .sd { color: #d14 } /* Literal.String.Doc */
+.highlight .s2 { color: #d14 } /* Literal.String.Double */
+.highlight .se { color: #d14 } /* Literal.String.Escape */
+.highlight .sh { color: #d14 } /* Literal.String.Heredoc */
+.highlight .si { color: #d14 } /* Literal.String.Interpol */
+.highlight .sx { color: #d14 } /* Literal.String.Other */
+.highlight .sr { color: #009926 } /* Literal.String.Regex */
+.highlight .s1 { color: #d14 } /* Literal.String.Single */
+.highlight .ss { color: #990073 } /* Literal.String.Symbol */
+.highlight .bp { color: #999999 } /* Name.Builtin.Pseudo */
+.highlight .vc { color: #008080 } /* Name.Variable.Class */
+.highlight .vg { color: #008080 } /* Name.Variable.Global */
+.highlight .vi { color: #008080 } /* Name.Variable.Instance */
+.highlight .il { color: #009999 } /* Literal.Number.Integer.Long */
+.pl-c {
+    color: #969896;
+}
+
+.pl-c1,.pl-mdh,.pl-mm,.pl-mp,.pl-mr,.pl-s1 .pl-v,.pl-s3,.pl-sc,.pl-sv {
+    color: #0086b3;
+}
+
+.pl-e,.pl-en {
+    color: #795da3;
+}
+
+.pl-s1 .pl-s2,.pl-smi,.pl-smp,.pl-stj,.pl-vo,.pl-vpf {
+    color: #333;
+}
+
+.pl-ent {
+    color: #63a35c;
+}
+
+.pl-k,.pl-s,.pl-st {
+    color: #a71d5d;
+}
+
+.pl-pds,.pl-s1,.pl-s1 .pl-pse .pl-s2,.pl-sr,.pl-sr .pl-cce,.pl-sr .pl-sra,.pl-sr .pl-sre,.pl-src,.pl-v {
+    color: #df5000;
+}
+
+.pl-id {
+    color: #b52a1d;
+}
+
+.pl-ii {
+    background-color: #b52a1d;
+    color: #f8f8f8;
+}
+
+.pl-sr .pl-cce {
+    color: #63a35c;
+    font-weight: bold;
+}
+
+.pl-ml {
+    color: #693a17;
+}
+
+.pl-mh,.pl-mh .pl-en,.pl-ms {
+    color: #1d3e81;
+    font-weight: bold;
+}
+
+.pl-mq {
+    color: #008080;
+}
+
+.pl-mi {
+    color: #333;
+    font-style: italic;
+}
+
+.pl-mb {
+    color: #333;
+    font-weight: bold;
+}
+
+.pl-md,.pl-mdhf {
+    background-color: #ffecec;
+    color: #bd2c00;
+}
+
+.pl-mdht,.pl-mi1 {
+    background-color: #eaffea;
+    color: #55a532;
+}
+
+.pl-mdr {
+    color: #795da3;
+    font-weight: bold;
+}
+
+.pl-mo {
+    color: #1d3e81;
+}
+.task-list {
+padding-left:10px;
+margin-bottom:0;
+}
+
+.task-list li {
+    margin-left: 20px;
+}
+
+.task-list-item {
+list-style-type:none;
+padding-left:10px;
+}
+
+.task-list-item label {
+font-weight:400;
+}
+
+.task-list-item.enabled label {
+cursor:pointer;
+}
+
+.task-list-item+.task-list-item {
+margin-top:3px;
+}
+
+.task-list-item-checkbox {
+display:inline-block;
+margin-left:-20px;
+margin-right:3px;
+vertical-align:1px;
+}
+</style>
+</head>
+<body>
+<h1 id="-">某新闻网站爬取实战</h1>
+<h1 id="1-">1、需求说明</h1>
+<p><img src="img/1.png" alt=""></p>
+<ul>
+<li>网址：<a href="https://www.huxiu.com/">https://www.huxiu.com/</a></li><li>爬取网站的文章，并保存到数据库</li></ul>
+<h1 id="2-">2、需求分析</h1>
+<ul>
+<li>爬取首页的数据</li><li>爬取分页的数据</li><li>创建数据库，保存数据</li></ul>
+<h1 id="3-">3、创建项目</h1>
+<pre><code class="lang-shell">        &lt;dependency&gt;
+            &lt;groupId&gt;org.apache.httpcomponents&lt;/groupId&gt;
+            &lt;artifactId&gt;httpclient&lt;/artifactId&gt;
+            &lt;version&gt;4.5.3&lt;/version&gt;
+        &lt;/dependency&gt;
+        &lt;!-- jsoup HTML parser library @ https://jsoup.org/ --&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.jsoup&lt;/groupId&gt;
+            &lt;artifactId&gt;jsoup&lt;/artifactId&gt;
+            &lt;version&gt;1.10.3&lt;/version&gt;
+        &lt;/dependency&gt;
+        &lt;!-- https://mvnrepository.com/artifact/org.springframework/spring-jdbc --&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-jdbc&lt;/artifactId&gt;
+            &lt;version&gt;4.2.6.RELEASE&lt;/version&gt;
+        &lt;/dependency&gt;
+
+        &lt;dependency&gt;
+            &lt;groupId&gt;mysql&lt;/groupId&gt;
+            &lt;artifactId&gt;mysql-connector-java&lt;/artifactId&gt;
+            &lt;version&gt;5.1.41&lt;/version&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;c3p0&lt;/groupId&gt;
+            &lt;artifactId&gt;c3p0&lt;/artifactId&gt;
+            &lt;version&gt;0.9.1.2&lt;/version&gt;
+        &lt;/dependency&gt;
+
+        &lt;dependency&gt;
+            &lt;groupId&gt;com.alibaba&lt;/groupId&gt;
+            &lt;artifactId&gt;fastjson&lt;/artifactId&gt;
+            &lt;version&gt;1.2.31&lt;/version&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;com.google.code.gson&lt;/groupId&gt;
+            &lt;artifactId&gt;gson&lt;/artifactId&gt;
+            &lt;version&gt;2.8.1&lt;/version&gt;
+        &lt;/dependency&gt;
+</code></pre>
+<h1 id="4-">4、代码开发（核心）</h1>
+<pre><code class="lang-java">package huxiuSpider;
+
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
+import com.alibaba.fastjson.JSON;
+
+/**
+ * 开发虎嗅爬虫遇到的第一个问题 服务器返回500，简单的反爬虫技术。
+ * 
+ * @author maoxiangyi
+ *
+ */
+public class HuxiuSpider {
+    private static ArticleDao articleDao = new ArticleDao();
+    private static ArrayBlockingQueue&lt;String&gt; urls = new ArrayBlockingQueue&lt;String&gt;(500);
+    private static ExecutorService pool = Executors.newFixedThreadPool(10);
+
+    public static void main(String[] args) throws Exception {
+        // 初始化六个线程用来解析每个新闻详情页
+        for (int i = 0; i &lt; 10; i++) {
+            pool.submit(new Runnable() {
+
+                public void run() {
+                    while (true) {
+                        try {
+                            String url = urls.take();
+                            // 访问单个页面 得到html
+                            String html = getHtmlByGet(url, getHeaders());
+                            if (html != null) {
+                                // 解析html文档，得到artice对象
+                                Article article = parseArticle(html);
+                                // 保存数据库
+                                save2db(article);
+                            }
+
+                        } catch (InterruptedException e) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        }
+
+                    }
+
+                }
+            });
+        }
+
+        // 1、通过httpclient发起get请求
+        HashMap&lt;String, String&gt; headers = getHeaders();
+        String html = getHtmlByGet(&quot;https://www.huxiu.com/&quot;, headers);
+        // 2、解析首页
+        parseIndex(headers, html);
+        // 3、获取分页信息 下一页
+        String last_dateline = getDateLineByIndexHtml(html);
+        paging(headers, last_dateline);
+
+    }
+
+    private static void paging(HashMap&lt;String, String&gt; headers, String last_dateline)
+            throws UnsupportedEncodingException, IOException, ClientProtocolException, Exception {
+        // 第二页
+        HttpPost httpPost = getPost(headers, last_dateline, 2);
+        String html = getHtmlByPost(httpPost);
+        // 解析json串
+        HuxiuResponse res = JSON.parseObject(html, HuxiuResponse.class);
+        Document doc = Jsoup.parse(res.getData());
+        // url article
+        Elements alist = doc.select(&quot;a[class=transition]&quot;);
+        for (Element element : alist) {
+            urls.put(&quot;http://www.huxiu.com&quot; + element.attr(&quot;href&quot;));
+            // html = getHtmlByGet(&quot;http://www.huxiu.com&quot; +
+            // element.attr(&quot;href&quot;), headers);
+            // Article article = parseArticle(html);
+            // save2db(article);
+        }
+
+        // 做第三页 4 5 6
+        // 最终可以多少页 总共分页页码，获得lastdateline
+        for (int page = 3; page &lt;= res.getTotal_page(); page++) {
+            HttpPost hp = getPost(headers, res.getLast_dateline(), page);
+            html = getHtmlByPost(hp);
+            res = JSON.parseObject(html, HuxiuResponse.class);
+            doc = Jsoup.parse(res.getData());
+            // url article
+            alist = doc.select(&quot;a[class=transition]&quot;);
+            for (Element element : alist) {
+                urls.put(&quot;http://www.huxiu.com&quot; + element.attr(&quot;href&quot;));
+                // html = getHtmlByGet(&quot;http://www.huxiu.com&quot; +
+                // element.attr(&quot;href&quot;), headers);
+                // Article article = parseArticle(html);
+                // save2db(article);
+            }
+
+            System.out.println(&quot;-----------------------------分页完成------------------------&quot;);
+
+        }
+    }
+
+    private static String getHtmlByPost(HttpPost httpPost) throws IOException, ClientProtocolException {
+        CloseableHttpClient pagingHttpClient = HttpClients.createDefault();
+        // 发起请求
+        CloseableHttpResponse paginHtml = pagingHttpClient.execute(httpPost);
+        return EntityUtils.toString(paginHtml.getEntity());
+    }
+
+    private static HttpPost getPost(HashMap&lt;String, String&gt; headers, String last_dateline, int page)
+            throws UnsupportedEncodingException {
+        String api = &quot;https://www.huxiu.com/v2_action/article_list&quot;;
+        HttpPost httpPost = new HttpPost(api);
+        // 提交一些参数
+        ArrayList&lt;BasicNameValuePair&gt; paramList = new ArrayList&lt;BasicNameValuePair&gt;();
+        paramList.add(new BasicNameValuePair(&quot;huxiu_hash_code&quot;, &quot;a3bec0c023f9f2481ed8eeddf9c15225&quot;));
+        paramList.add(new BasicNameValuePair(&quot;page&quot;, page + &quot;&quot;));
+        paramList.add(new BasicNameValuePair(&quot;last_dateline&quot;, last_dateline));
+        httpPost.setEntity(new UrlEncodedFormEntity(paramList));
+        // 提交请求头
+        for (Map.Entry&lt;String, String&gt; entry : headers.entrySet()) {
+            httpPost.addHeader(entry.getKey(), entry.getValue());
+        }
+        return httpPost;
+    }
+
+    private static void parseIndex(HashMap&lt;String, String&gt; headers, String html) {
+        if (html != null) {
+            getArticleListByIndex(html);
+            // // 2.1、获取首页中每个url对应的详情页
+            // for (String url : articleUrls) {
+            // /**
+            // * 思考一个性能问题：for循环是依次迭代的，假设articleUrls.size=200，
+            // * 抓取完所有的页面会需要很多时间，如何提高住区的速度？
+            // *
+            // * Java基础 多线程 一个进程中有个线程执行，可以提高处理速度。
+            // */
+            // new ProcessPageInfo(url, headers).start();
+            // }
+        }
+    }
+
+    private static String getDateLineByIndexHtml(String html) {
+        Document doc = Jsoup.parse(html);
+        Elements eles = doc.select(&quot;div[data-last_dateline]&quot;);
+        return eles.get(0).attr(&quot;data-last_dateline&quot;);
+    }
+
+    /**
+     * 将新闻保存到数据库中 数据库的连接(mysql) 账户密码 连接url 连接(datasource) mybatis jdbctemplate
+     * 
+     * @param article
+     */
+    public static void save2db(Article article) {
+        // 不能让数据库连接池 每次都创建
+        articleDao.save(article);
+
+    }
+
+    public static Article parseArticle(String html) {
+        Article article = new Article();
+        Document doc = Jsoup.parse(html);
+        // 获取标题
+        Elements titles = doc.select(&quot;h1.t-h1&quot;);
+        article.setTitle(titles.get(0).ownText());
+        // 获取作者信息
+        Elements authors = doc.select(&quot;span.author-name&quot;);
+        article.setAuthor(authors.get(0).text());
+        // 发布时间
+        Elements times = doc.select(&quot;span[class=article-time pull-left]&quot;);
+        article.setCreateTime(times.size() == 0 ? new Date().toString() : times.get(0).ownText());
+        // 收藏
+        Elements scs = doc.select(&quot;span[class=article-share pull-left]&quot;);
+        article.setSc(scs.size() == 0 ? &quot;0&quot; : scs.get(0).ownText().substring(2));
+        // 评论
+        Elements pls = doc.select(&quot;span[class=article-pl pull-left]&quot;);
+        article.setPl(pls.size() == 0 ? &quot;0&quot; : pls.get(0).ownText().substring(2));
+
+        // 获取赞
+        Elements zans = doc.select(&quot;span.num&quot;);
+        article.setZan(zans.get(0).ownText());
+
+        // 获取新闻的内容
+        Elements contents = doc.select(&quot;div.article-content-wrap&quot;);
+        article.setContent(contents.text());
+
+        System.out.println(article);
+        return article;
+    }
+
+    private static void getArticleListByIndex(String html) {
+        Document doc = Jsoup.parse(html);
+        // 第一步 获取文章列表区域
+        Elements articleContent = doc.select(&quot;div.mod-info-flow&quot;);
+        Elements aTags = articleContent.select(&quot;a[class=transition]&quot;);
+        for (Element element : aTags) {
+            String href = element.attr(&quot;href&quot;);
+            if (href.contains(&quot;article&quot;)) {
+                // 第二步 获取每个新闻详情页的url
+                try {
+                    urls.put(&quot;https://www.huxiu.com&quot; + href);
+                } catch (InterruptedException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    private static HashMap&lt;String, String&gt; getHeaders() {
+        HashMap&lt;String, String&gt; headers = new HashMap&lt;String, String&gt;();
+        headers.put(&quot;User-Agent&quot;,
+                &quot;Mozilla/5.0 (Windows NT 6.1;Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)Chrome/59.0.3071.115 Safari/537.36&quot;);
+        return headers;
+    }
+
+    /**
+     * 通过httpGet的方式获取网页的内容
+     * 
+     * @param url
+     *            网络自愿抵制
+     * @param headers
+     *            请求头
+     * @return 默认返回null，有也会返回null。200才返回数据。
+     */
+    public static String getHtmlByGet(String url, Map&lt;String, String&gt; headers) {
+        String html = null;
+        try {
+            CloseableHttpClient hc = HttpClients.createDefault();
+            HttpGet httpGet = new HttpGet(url);
+            for (Map.Entry&lt;String, String&gt; entry : headers.entrySet()) {
+                httpGet.addHeader(entry.getKey(), entry.getValue());
+            }
+
+            CloseableHttpResponse response = hc.execute(httpGet);
+            int code = response.getStatusLine().getStatusCode();
+            if (200 == code) {
+                html = EntityUtils.toString(response.getEntity());
+            } else {
+                System.out.println(code);
+                System.out.println(&quot;请求url失败……&quot; + url);
+            }
+        } catch (Exception e) {
+            System.out.println(url);
+            System.out.println(&quot;访问网络资源失败！&quot; + e);
+        }
+        return html;
+    }
+}
+</code></pre>
+<h1 id="5-">5、线程与线程池</h1>
+<h1 id="-">线程是什么？</h1>
+<ul>
+<li>线程是运行在进程中的一个独立实体，是CPU调度和分派的基本单位。</li><li>线程基本不拥有系统资源，可以与同属一个进程的其它线程共享进程所用多的全部资源。</li></ul>
+<h1 id="-">多线程是什么？</h1>
+<ul>
+<li>一个进程中多个线程的情况，我们叫做多线程。</li><li>多个线程会共享进程所拥有的全部资源。</li></ul>
+<p><img src="img/multithread.png" alt=""></p>
+<h1 id="-">减少创建线程的开销，有哪些开销？</h1>
+<ul>
+<li>关于时间，创建线程使用是直接向系统申请资源的，对操作系统来说,创建一个线程的代价是十分昂贵的, 需要给它分配内存、列入调度,同时在线程切换的时候还要执行内存换页,CPU 的缓存被 清空,切换回来的时候还要重新从内存中读取信息,破坏了数据的局部性。</li><li>关于资源,Java线程的线程栈所占用的内存是在Java堆外的，所以是不受java程序控制的，只受系统资源限制，<strong>默认一个线程的线程栈大小是1M</strong>（当让这个可以通过设置-Xss属性设置，但是要注意栈溢出问题），但是，如果每个用户请求都新建线程的话，1024个用户光线程就占用了1个G的内存，如果系统比较大的话，一下子系统资源就不够用了，最后程序就崩溃了。</li></ul>
+<h1 id="-">多线程的作用</h1>
+<p>通过多个线程并发执行，从而提高任务处理的速度。</p>
+<h1 id="-">创建几种方式</h1>
+<ul>
+<li><p>继承Thread类，并复写run方法，创建该类对象，调用start方法开启线程。</p>
+</li><li><p>实现Runnable接口，复写run方法，创建Thread类对象，将Runnable子类对象传递给Thread类对象。调用start方法开启线程。</p>
+</li><li>通过Callable和Future创建线程（略）</li></ul>
+<h1 id="-">代码学习：</h1>
+<pre><code class="lang-java">public static void main(String[] args) throws ExecutionException {
+    //Callable的返回值就要使用Future对象，Callable负责计算结果，Future负责拿到结果
+    //1、实现Callable接口
+    Callable&lt;Integer&gt; callable = new Callable&lt;Integer&gt;() {
+        public Integer call() throws Exception {
+            int i=999;
+            //do something
+            // eg request http server and process
+            return i;
+        }
+    };
+    //2、使用FutureTask启动线程
+    FutureTask&lt;Integer&gt; future = new FutureTask&lt;Integer&gt;(callable);
+    new Thread(future).start();
+    //3、获取线程的结果
+    try {
+        Thread.sleep(5000);// 可能做一些事情
+        System.out.println(future.get());
+    } catch (InterruptedException e) {
+        e.printStackTrace();
+    } catch (ExecutionException e) {
+        e.printStackTrace();
+    }
+}
+</code></pre>
+<h1 id="-executors-">线程池 Executors类</h1>
+<ul>
+<li>创建固定数目线程的线程池</li><li>创建一个可缓存的线程池</li><li>定时及周期性的执行任务的线程池<ul>
+<li>scheduleAtFixedRate 这个方法是不管你有没有执行完，反正我每隔几秒来执行一次，以相同的频率来执行</li><li>scheduleWithFixedDelay 这个是等你方法执行完后，我再隔几秒来执行，也就是相对延迟后，以固定的频率去执行</li></ul>
+</li></ul>
+<h1 id="-">代码学习</h1>
+<pre><code class="lang-java">public static  void testFixedThreadPool() {
+    //创建固定的线程池，使用3个线程来并发执行提交的任务。底层是个无界队列
+    ExecutorService executorService = Executors.newFixedThreadPool(6);
+    executorService.execute(new MyThread());
+    executorService.execute(new MyRunnable());
+    executorService.execute(new MyRunnable());
+    executorService.execute(new MyRunnable());
+    executorService.execute(new MyThread());
+    executorService.execute(new MyThread());
+}
+
+public static void testSingleThreadPool() {
+    //创建单线程,在任务执行时，会依次执行任务。底层是个无界队列。
+    ExecutorService executorService = Executors.newSingleThreadExecutor();
+    executorService.execute(new MyThread());
+    executorService.execute(new MyRunnable());
+    executorService.execute(new MyRunnable());
+    executorService.execute(new MyRunnable());
+    executorService.execute(new MyThread());
+}
+
+public static void testCacheThreadPool() {
+    //创建非固定数量，可缓存的线程池。当提交的任务数量起起伏伏时，会自动创建或者减少执行线程的数量。
+    //当然，重用线程是线程池的基本特征。
+    ExecutorService executorService = Executors.newCachedThreadPool();
+    executorService.execute(new MyThread());
+    executorService.execute(new MyRunnable());
+    executorService.execute(new MyRunnable());
+    executorService.execute(new MyRunnable());
+    executorService.execute(new MyThread());
+}
+
+public static void testScheduledThreadPool(){
+    //创建一个定时执行线程池
+    ScheduledExecutorService executorService = Executors.newScheduledThreadPool(30);
+    //1、配置任务的执行周期
+    //scheduleAtFixedRate 固定周期执行完毕
+    executorService.scheduleAtFixedRate(new MyRunnable(),0,1000,TimeUnit.MILLISECONDS);
+    //scheduleWithFixedDelay 上一次执行完毕之后下一次开始执行
+    executorService.scheduleWithFixedDelay(new MyRunnable(),0,1000,TimeUnit.MILLISECONDS);
+}
+
+public static void testSingleCacheThreadPool(){
+    //创建一个单个线程执行的定时器
+    ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
+    //scheduleAtFixedRate 固定周期执行完毕
+    executorService.scheduleAtFixedRate(new MyRunnable(),0,1000,TimeUnit.MILLISECONDS);
+    //scheduleWithFixedDelay 上一次执行完毕之后下一次开始执行
+    executorService.scheduleWithFixedDelay(new MyRunnable(),0,1000,TimeUnit.MILLISECONDS);
+}
+
+public static void testMyThreadPool(){
+    //自定义连接池稍微麻烦些，不过通过创建的ThreadPoolExecutor线程池对象，可以获取到当前线程池的尺寸、正在执行任务的线程数、工作队列等等。
+    ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(10,100,10,TimeUnit.SECONDS,new ArrayBlockingQueue&lt;Runnable&gt;(100));
+    threadPoolExecutor.execute(new MyThread());
+    threadPoolExecutor.execute(new MyRunnable());
+    threadPoolExecutor.execute(new MyRunnable());
+}
+</code></pre>
+<h1 id="6-">6、队列</h1>
+<h1 id="-">队列基础</h1>
+<p>基本概念</p>
+<ul>
+<li>Queue用于模拟队列这种数据结构。</li><li>队列通常是指“先进先出（FIFO）”的容器。</li><li>队列的头部保存在队列中存放时间最长的元素，尾部保存存放时间最短的元素。</li><li>新元素插入到队列的尾部，取出元素会返回队列头部的元素。</li><li>通常，队列不允许随机访问队列中的元素。</li><li>在java5中新增加了java.util.Queue接口，用以支持队列的常见操作。该接口扩展了java.util.Collection接口。Queue使用时要尽量避免Collection的add()和remove()方法，而是要使用offer()来加入元素，使用poll()来获取并移出元素。它们的优点是通过返回值可以判断成功与否，add()和remove()方法在失败的时候会抛出异常。 如果要使用前端而不移出该元素，使用element()或者peek()方法。</li></ul>
+<h1 id="queue-">Queue的常用方法</h1>
+<p><img src="img/queue_operation.png" alt=""></p>
+<ul>
+<li>插入数据<ul>
+<li>void add(Object e):　　将指定元素插入到队列的尾部。</li><li>boolean offer(Object e):　　将指定的元素插入此队列的尾部。当使用容量有限的队列时，此方法通常比add(Object e)有效。</li></ul>
+</li><li>移除<ul>
+<li>Object remove():　　获取队列头部的元素，并删除该元素。</li><li>Object poll():　　返回队列头部的元素，并删除该元素。如果队列为空，则返回null。</li></ul>
+</li><li>检查<ul>
+<li>object element():　　获取队列头部的元素，但是不删除该元素。</li><li>Object peek():　　返回队列头部的元素，但是不删除该元素。如果队列为空，则返回null。</li></ul>
+</li></ul>
+<p>注意一点就好，Queue通常不允许插入Null，尽管某些实现（比如LinkedList）是允许的，但是也不建议。</p>
+<h1 id="-">双端队列</h1>
+<p>Queue还有一个Deque接口，Deque代表一个“双端队列”，双端队列可以同时从两端删除或添加元素，因此Deque可以当作栈来使用。java为Deque提供了ArrayDeque实现类和LinkedList实现类。</p>
+<pre><code class="lang-java">public static void main(String[] args) {
+    ArrayDeque queue = new ArrayDeque();
+    queue.offer(&quot;春&quot;);
+    queue.offer(&quot;夏&quot;);
+    queue.offer(&quot;秋&quot;);
+    System.out.println(queue);
+    System.out.println(queue.peek());
+    System.out.println(queue);
+    System.out.println(queue.poll());
+    System.out.println(queue);
+}
+</code></pre>
+<h1 id="-queue-">在多线程下queue有什么问题？</h1>
+<pre><code>最主要的问题，重复消费，造成数据混乱
+</code></pre><h1 id="-">阻塞队列</h1>
+<p>BlockingQueue,如果BlockQueue是空的,从BlockingQueue取东西的操作将会被阻断进入等待状态,直到BlockingQueue进了东西才会被唤醒.同样,如果BlockingQueue是满的,任何试图往里存东西的操作也会被阻断进入等待状态,直到BlockingQueue里有空间才会被唤醒继续操作</p>
+<ul>
+<li><p>BlockingQueue阻塞队列</p>
+<ul>
+<li>ArrayBlockingQueue</li><li>LinkedBlockingQueue</li></ul>
+</li><li><p>常见操作</p>
+<ul>
+<li>add():把anObject加到BlockingQueue里,即如果BlockingQueue可以容纳,则返回true,否则报异常 </li><li>offer():表示如果可能的话,将anObject加到BlockingQueue里,即如果BlockingQueue可以容纳,则返回true,否则返回false. </li><li>put():把anObject加到BlockingQueue里,如果BlockQueue没有空间,则调用此方法的线程被阻断直到BlockingQueue里面有空间再继续. </li><li>poll():取走BlockingQueue里排在首位的对象,若不能立即取出,则可以等time参数规定的时间,取不到时返回null </li><li>take():取走BlockingQueue里排在首位的对象,若BlockingQueue为空,阻断进入等待状态直到Blocking有新的对象被加入为止 </li></ul>
+</li></ul>
+<pre><code class="lang-java">public static void main(String[] args) {
+
+    final BlockingQueue queue = new ArrayBlockingQueue(3);
+    //创建三个线程 生产数据 put
+    for (int i = 0; i &lt; 2; i++) {
+        new Thread() {
+            public void run() {
+                while (true) {
+                    try {
+                        Thread.sleep((long) (Math.random() * 1000));
+                        System.out.println(Thread.currentThread().getName() + &quot;--------------准备放数据!&quot;);
+                        queue.put(1);
+                        System.out.println(Thread.currentThread().getName() + &quot;--------------已经放了数据，&quot; +
+                                &quot;队列目前有&quot; + queue.size() + &quot;个数据&quot;);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+            }
+
+        }.start();
+    }
+    //创建一个线程消费数据 take 数据
+    new Thread() {
+        public void run() {
+            while (true) {
+                try {
+                    //将此处的睡眠时间分别改为100和1000，观察运行结果
+                    Thread.sleep(1000);
+                    System.out.println(Thread.currentThread().getName() + &quot;准备取数据!&quot;);
+                    queue.take();
+                    System.out.println(Thread.currentThread().getName() + &quot;已经取走数据，&quot; +
+                            &quot;队列目前有&quot; + queue.size() + &quot;个数据&quot;);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }.start();
+}
+</code></pre>
+
+</body>
+</html>
+<!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->

@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>6-如何模拟浏览器进行网络请求</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+/* GitHub stylesheet for MarkdownPad (http://markdownpad.com) */
+/* Author: Nicolas Hery - http://nicolashery.com */
+/* Version: b13fe65ca28d2e568c6ed5d7f06581183df8f2ff */
+/* Source: https://github.com/nicolahery/markdownpad-github */
+
+/* RESET
+=============================================================================*/
+
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* BODY
+=============================================================================*/
+
+body {
+  font-family: Helvetica, arial, freesans, clean, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
+  background-color: #fff;
+  padding: 20px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+body>*:first-child {
+  margin-top: 0 !important;
+}
+
+body>*:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* BLOCKS
+=============================================================================*/
+
+p, blockquote, ul, ol, dl, table, pre {
+  margin: 15px 0;
+}
+
+/* HEADERS
+=============================================================================*/
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 20px 0 10px;
+  padding: 0;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 tt, h1 code, h2 tt, h2 code, h3 tt, h3 code, h4 tt, h4 code, h5 tt, h5 code, h6 tt, h6 code {
+  font-size: inherit;
+}
+
+h1 {
+  font-size: 28px;
+  color: #000;
+}
+
+h2 {
+  font-size: 24px;
+  border-bottom: 1px solid #ccc;
+  color: #000;
+}
+
+h3 {
+  font-size: 18px;
+}
+
+h4 {
+  font-size: 16px;
+}
+
+h5 {
+  font-size: 14px;
+}
+
+h6 {
+  color: #777;
+  font-size: 14px;
+}
+
+body>h2:first-child, body>h1:first-child, body>h1:first-child+h2, body>h3:first-child, body>h4:first-child, body>h5:first-child, body>h6:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+h1+p, h2+p, h3+p, h4+p, h5+p, h6+p {
+  margin-top: 10px;
+}
+
+/* LINKS
+=============================================================================*/
+
+a {
+  color: #4183C4;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* LISTS
+=============================================================================*/
+
+ul, ol {
+  padding-left: 30px;
+}
+
+ul li > :first-child, 
+ol li > :first-child, 
+ul li ul:first-of-type, 
+ol li ol:first-of-type, 
+ul li ol:first-of-type, 
+ol li ul:first-of-type {
+  margin-top: 0px;
+}
+
+ul ul, ul ol, ol ol, ol ul {
+  margin-bottom: 0;
+}
+
+dl {
+  padding: 0;
+}
+
+dl dt {
+  font-size: 14px;
+  font-weight: bold;
+  font-style: italic;
+  padding: 0;
+  margin: 15px 0 5px;
+}
+
+dl dt:first-child {
+  padding: 0;
+}
+
+dl dt>:first-child {
+  margin-top: 0px;
+}
+
+dl dt>:last-child {
+  margin-bottom: 0px;
+}
+
+dl dd {
+  margin: 0 0 15px;
+  padding: 0 15px;
+}
+
+dl dd>:first-child {
+  margin-top: 0px;
+}
+
+dl dd>:last-child {
+  margin-bottom: 0px;
+}
+
+/* CODE
+=============================================================================*/
+
+pre, code, tt {
+  font-size: 12px;
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
+}
+
+code, tt {
+  margin: 0 0px;
+  padding: 0px 0px;
+  white-space: nowrap;
+  border: 1px solid #eaeaea;
+  background-color: #f8f8f8;
+  border-radius: 3px;
+}
+
+pre>code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent;
+}
+
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px;
+}
+
+pre code, pre tt {
+  background-color: transparent;
+  border: none;
+}
+
+kbd {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #DDDDDD;
+    background-image: linear-gradient(#F1F1F1, #DDDDDD);
+    background-repeat: repeat-x;
+    border-color: #DDDDDD #CCCCCC #CCCCCC #DDDDDD;
+    border-image: none;
+    border-radius: 2px 2px 2px 2px;
+    border-style: solid;
+    border-width: 1px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    line-height: 10px;
+    padding: 1px 4px;
+}
+
+/* QUOTES
+=============================================================================*/
+
+blockquote {
+  border-left: 4px solid #DDD;
+  padding: 0 15px;
+  color: #777;
+}
+
+blockquote>:first-child {
+  margin-top: 0px;
+}
+
+blockquote>:last-child {
+  margin-bottom: 0px;
+}
+
+/* HORIZONTAL RULES
+=============================================================================*/
+
+hr {
+  clear: both;
+  margin: 15px 0;
+  height: 0px;
+  overflow: hidden;
+  border: none;
+  background: transparent;
+  border-bottom: 4px solid #ddd;
+  padding: 0;
+}
+
+/* TABLES
+=============================================================================*/
+
+table th {
+  font-weight: bold;
+}
+
+table th, table td {
+  border: 1px solid #ccc;
+  padding: 6px 13px;
+}
+
+table tr {
+  border-top: 1px solid #ccc;
+  background-color: #fff;
+}
+
+table tr:nth-child(2n) {
+  background-color: #f8f8f8;
+}
+
+/* IMAGES
+=============================================================================*/
+
+img {
+  max-width: 100%
+}
+</style>
+<style type="text/css">
+.highlight  { background: #ffffff; }
+.highlight .c { color: #999988; font-style: italic } /* Comment */
+.highlight .err { color: #a61717; background-color: #e3d2d2 } /* Error */
+.highlight .k { font-weight: bold } /* Keyword */
+.highlight .o { font-weight: bold } /* Operator */
+.highlight .cm { color: #999988; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #999999; font-weight: bold } /* Comment.Preproc */
+.highlight .c1 { color: #999988; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #999999; font-weight: bold; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #000000; background-color: #ffdddd } /* Generic.Deleted */
+.highlight .gd .x { color: #000000; background-color: #ffaaaa } /* Generic.Deleted.Specific */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .gr { color: #aa0000 } /* Generic.Error */
+.highlight .gh { color: #999999 } /* Generic.Heading */
+.highlight .gi { color: #000000; background-color: #ddffdd } /* Generic.Inserted */
+.highlight .gi .x { color: #000000; background-color: #aaffaa } /* Generic.Inserted.Specific */
+.highlight .go { color: #888888 } /* Generic.Output */
+.highlight .gp { color: #555555 } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #aaaaaa } /* Generic.Subheading */
+.highlight .gt { color: #aa0000 } /* Generic.Traceback */
+.highlight .kc { font-weight: bold } /* Keyword.Constant */
+.highlight .kd { font-weight: bold } /* Keyword.Declaration */
+.highlight .kp { font-weight: bold } /* Keyword.Pseudo */
+.highlight .kr { font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #445588; font-weight: bold } /* Keyword.Type */
+.highlight .m { color: #009999 } /* Literal.Number */
+.highlight .s { color: #d14 } /* Literal.String */
+.highlight .na { color: #008080 } /* Name.Attribute */
+.highlight .nb { color: #0086B3 } /* Name.Builtin */
+.highlight .nc { color: #445588; font-weight: bold } /* Name.Class */
+.highlight .no { color: #008080 } /* Name.Constant */
+.highlight .ni { color: #800080 } /* Name.Entity */
+.highlight .ne { color: #990000; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #990000; font-weight: bold } /* Name.Function */
+.highlight .nn { color: #555555 } /* Name.Namespace */
+.highlight .nt { color: #000080 } /* Name.Tag */
+.highlight .nv { color: #008080 } /* Name.Variable */
+.highlight .ow { font-weight: bold } /* Operator.Word */
+.highlight .w { color: #bbbbbb } /* Text.Whitespace */
+.highlight .mf { color: #009999 } /* Literal.Number.Float */
+.highlight .mh { color: #009999 } /* Literal.Number.Hex */
+.highlight .mi { color: #009999 } /* Literal.Number.Integer */
+.highlight .mo { color: #009999 } /* Literal.Number.Oct */
+.highlight .sb { color: #d14 } /* Literal.String.Backtick */
+.highlight .sc { color: #d14 } /* Literal.String.Char */
+.highlight .sd { color: #d14 } /* Literal.String.Doc */
+.highlight .s2 { color: #d14 } /* Literal.String.Double */
+.highlight .se { color: #d14 } /* Literal.String.Escape */
+.highlight .sh { color: #d14 } /* Literal.String.Heredoc */
+.highlight .si { color: #d14 } /* Literal.String.Interpol */
+.highlight .sx { color: #d14 } /* Literal.String.Other */
+.highlight .sr { color: #009926 } /* Literal.String.Regex */
+.highlight .s1 { color: #d14 } /* Literal.String.Single */
+.highlight .ss { color: #990073 } /* Literal.String.Symbol */
+.highlight .bp { color: #999999 } /* Name.Builtin.Pseudo */
+.highlight .vc { color: #008080 } /* Name.Variable.Class */
+.highlight .vg { color: #008080 } /* Name.Variable.Global */
+.highlight .vi { color: #008080 } /* Name.Variable.Instance */
+.highlight .il { color: #009999 } /* Literal.Number.Integer.Long */
+.pl-c {
+    color: #969896;
+}
+
+.pl-c1,.pl-mdh,.pl-mm,.pl-mp,.pl-mr,.pl-s1 .pl-v,.pl-s3,.pl-sc,.pl-sv {
+    color: #0086b3;
+}
+
+.pl-e,.pl-en {
+    color: #795da3;
+}
+
+.pl-s1 .pl-s2,.pl-smi,.pl-smp,.pl-stj,.pl-vo,.pl-vpf {
+    color: #333;
+}
+
+.pl-ent {
+    color: #63a35c;
+}
+
+.pl-k,.pl-s,.pl-st {
+    color: #a71d5d;
+}
+
+.pl-pds,.pl-s1,.pl-s1 .pl-pse .pl-s2,.pl-sr,.pl-sr .pl-cce,.pl-sr .pl-sra,.pl-sr .pl-sre,.pl-src,.pl-v {
+    color: #df5000;
+}
+
+.pl-id {
+    color: #b52a1d;
+}
+
+.pl-ii {
+    background-color: #b52a1d;
+    color: #f8f8f8;
+}
+
+.pl-sr .pl-cce {
+    color: #63a35c;
+    font-weight: bold;
+}
+
+.pl-ml {
+    color: #693a17;
+}
+
+.pl-mh,.pl-mh .pl-en,.pl-ms {
+    color: #1d3e81;
+    font-weight: bold;
+}
+
+.pl-mq {
+    color: #008080;
+}
+
+.pl-mi {
+    color: #333;
+    font-style: italic;
+}
+
+.pl-mb {
+    color: #333;
+    font-weight: bold;
+}
+
+.pl-md,.pl-mdhf {
+    background-color: #ffecec;
+    color: #bd2c00;
+}
+
+.pl-mdht,.pl-mi1 {
+    background-color: #eaffea;
+    color: #55a532;
+}
+
+.pl-mdr {
+    color: #795da3;
+    font-weight: bold;
+}
+
+.pl-mo {
+    color: #1d3e81;
+}
+.task-list {
+padding-left:10px;
+margin-bottom:0;
+}
+
+.task-list li {
+    margin-left: 20px;
+}
+
+.task-list-item {
+list-style-type:none;
+padding-left:10px;
+}
+
+.task-list-item label {
+font-weight:400;
+}
+
+.task-list-item.enabled label {
+cursor:pointer;
+}
+
+.task-list-item+.task-list-item {
+margin-top:3px;
+}
+
+.task-list-item-checkbox {
+display:inline-block;
+margin-left:-20px;
+margin-right:3px;
+vertical-align:1px;
+}
+</style>
+</head>
+<body>
+<h1 id="-">如何模拟浏览器进行网络请求</h1>
+<ul>
+<li>1、HTTP协议</li><li>2、Java网络请求原生API<ul>
+<li>2.1、Java网络请求原生API-Get请求</li><li>2.2、Java网络请求原生API-Post请求</li></ul>
+</li><li>3、使用HttpClient进行网络请求<ul>
+<li>3.1、使用HttpClient进行Get请求</li><li>3.2、使用HttpClient进行POST请求</li><li>3.3、使用HttpClient进行Get请求-简单</li><li>3.4、使用HttpClient进行POST请求-简单</li></ul>
+</li></ul>
+<h1 id="1-http-">1、HTTP协议</h1>
+<p>HTTP是一个客户端和服务器端请求和应答的标准（TCP）。客户端是终端用户，服务器端是网站。通过使用Web浏览器、网络爬虫或者其它的工具，客户端发起一个到服务器上指定端口（默认端口为80）的HTTP请求。<br><img src="img/http_c_s.jpg" alt=""></p>
+<p>客户端向服务器发送一个请求，请求头包含请求的方法、URL、协议版本、以及包含请求修饰符、客户信息和内容的类似于MIME的消息结构。</p>
+<p>服务器以一个状态行作为响应，响应的内容包括消息协议的版本，成功或者错误编码加上包含服务器信息、实体元信息以及可能的实体内容。</p>
+<p>通常HTTP消息包括客户机向服务器的请求消息和服务器向客户机的响应消息。这两种类型的消息由一个起始行，一个或者多个头域，一个指示头域结束的空行和可选的消息体组成。<br><img src="img/http_p.jpg" alt=""></p>
+<p>HTTP的头域包括通用头，请求头，响应头和实体头四个部分。每个头域由一个域名，冒号（:）和域值三部分组成。域名是大小写无关的，域值前可以添加任何数量的空格符，头域可以被扩展为多行，在每行开始处，使用至少一个空格或制表符。</p>
+<p>HTTP常见状态码   <a href="http://baike.baidu.com/link?url=zZnwNYkU6BOnCYJppHe3aw5f3lW2AgzxWGfSYmAqck5ytYmSN8FT_BxCslKYK7grv0wdWsXeezd1aIQM6HpKSa">所有的状态码:百度百科</a></p>
+<p><img src="img/http_code.png" alt=""></p>
+<h1 id="2-java-api">2、Java网络请求原生API</h1>
+<p>HttpUrlConnection </p>
+<p>Get 方式请求网络基本流程</p>
+<ul>
+<li>给定一个域名：www.itcast.cn</li><li>创建URL对象</li><li>通过URL对象打开一个连接</li><li>判断请求状态是否等于200<ul>
+<li>输入流：获取服务端的响应数据</li><li>使用BufferReader读取数据</li><li>关闭流</li></ul>
+</li></ul>
+<p>Post 方式请求网络基本流程</p>
+<ul>
+<li>给定一个域名：www.itcast.cn</li><li>创建URL对象</li><li>通过URL对象打开一个连接</li><li>设定Post请求方式<ul>
+<li>指定 requestMethod为post</li><li>打开 conn.setDoOutput(true)</li></ul>
+</li><li>提交数据到服务器<ul>
+<li>获取outputStream</li><li>写出数据</li><li>flush and close</li></ul>
+</li><li>判断请求状态是否等于200<ul>
+<li>输入流：获取服务端的响应数据</li><li>使用BufferReader读取数据</li><li>关闭流</li></ul>
+</li></ul>
+<h3 id="2-1-java-api-get-">2.1、Java网络请求原生API-Get请求</h3>
+<p>使用原生API发送Get请求</p>
+<pre><code class="lang-java">public class Get {
+    public static final String USER_AGENT = &quot;Mozilla/5.0&quot;;
+    public static void main(String[] args) throws IOException {
+        //1、准备要访问的URL
+        String url = &quot;http://www.itcast.cn&quot;;
+        URL obj = new URL(url);
+        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+
+        //2、设置Http协议的参数
+        // optional default is GET
+        con.setRequestMethod(&quot;GET&quot;);
+        //add request header
+        con.setRequestProperty(&quot;User-Agent&quot;, USER_AGENT);
+
+        //3、发起HTTP请求，获取状态码
+        int responseCode = con.getResponseCode();
+        System.out.println(&quot;\nSending &#39;GET&#39; request to URL : &quot; + url);
+        System.out.println(&quot;Response Code : &quot; + responseCode);
+
+        //4、如果是正常相应，读取数据
+        if (responseCode == 200) {
+            BufferedReader in = new BufferedReader(
+                    new InputStreamReader(con.getInputStream()));
+            String inputLine;
+            StringBuffer response = new StringBuffer();
+            while ((inputLine = in.readLine()) != null) {
+                response.append(inputLine);
+            }
+            in.close();
+            //print result
+            System.out.println(response.toString());
+        }
+    }
+}
+</code></pre>
+<h3 id="2-2-java-api-post-">2.2、Java网络请求原生API-Post请求</h3>
+<p>使用原生API发送Post请求</p>
+<pre><code class="lang-java">package cn.itcast.pcss.base.httpurlconnection;
+
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
+public class Post {
+    public static final String USER_AGENT = &quot;Mozilla/5.0&quot;;
+    public static void main(String[] args) throws IOException {
+        String url = &quot;http://sspc.itcast.cn/login/login.html&quot;;
+        URL obj = new URL(url);
+        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+
+        //add reuqest header
+        con.setRequestMethod(&quot;POST&quot;);
+        con.setRequestProperty(&quot;User-Agent&quot;, Post.USER_AGENT);
+        con.setRequestProperty(&quot;Accept-Language&quot;, &quot;en-US,en;q=0.5&quot;);
+
+        String urlParameters = &quot;username=maoxiangyi&amp;password=&amp;maoxiangyi&amp;reURL=http://shop.itcast.cn/item/itemList.html&quot;;
+
+        // Send post request
+        con.setDoOutput(true);
+        DataOutputStream wr = new DataOutputStream(con.getOutputStream());
+        wr.writeBytes(urlParameters);
+        wr.flush();
+        wr.close();
+
+        int responseCode = con.getResponseCode();
+        System.out.println(&quot;\nSending &#39;POST&#39; request to URL : &quot; + url);
+        System.out.println(&quot;Post parameters : &quot; + urlParameters);
+        System.out.println(&quot;Response Code : &quot; + responseCode);
+        if (responseCode == 200) {
+            BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+            String inputLine;
+            StringBuffer response = new StringBuffer();
+            while ((inputLine = in.readLine()) != null) {
+                response.append(inputLine);
+            }
+            in.close();
+            System.out.println(response.toString());
+        }
+    }
+}
+</code></pre>
+<h1 id="3-httpclient-">3、使用HttpClient进行网络请求</h1>
+<p>本节介绍使用HttpClient进行网络请求。</p>
+<p>HttpClient 是 Apache Jakarta Common 下的子项目，可以用来提供高效的、最新的、功能丰富的支持 HTTP 协议的客户端编程工具包，并且它支持 HTTP 协议最新的版本和建议。</p>
+<p><a href="http://hc.apache.org/">HtppClient 官网</a></p>
+<p>为什么有HttpClient</p>
+<ul>
+<li>超文本传输协议（HTTP）可能是当今互联网上使用的最重要的协议</li><li>虽然java.net包提供了通过HTTP访问资源的基本功能，但它并没有提供许多应用程序所需的完全灵活性或功能</li></ul>
+<p>使用HttpClient的maven依赖</p>
+<pre><code class="lang-java">&lt;dependency&gt;
+    &lt;groupId&gt;org.apache.httpcomponents&lt;/groupId&gt;
+    &lt;artifactId&gt;httpclient&lt;/artifactId&gt;
+    &lt;version&gt;4.5.3&lt;/version&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;org.apache.httpcomponents&lt;/groupId&gt;
+    &lt;artifactId&gt;fluent-hc&lt;/artifactId&gt;
+    &lt;version&gt;4.5.2&lt;/version&gt;
+&lt;/dependency
+</code></pre>
+<h3 id="3-1-httpclient-get-">3.1、使用HttpClient进行Get请求</h3>
+<p>使用HttpClient进行Get请求</p>
+<ul>
+<li>HttpClients.createDefault 创建一个客户端</li><li>HttpGet 创建一个Get请求</li><li>httpclient.execute(httpGet) 执行一个请求</li><li>CloseableHttpResponse 获取返回值<ul>
+<li>getStatusLine 获取状态信息 </li><li>EntityUtils 操作返回内容</li></ul>
+</li></ul>
+<p>代码实现</p>
+<pre><code class="lang-java">import org.apache.http.HttpEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
+
+import java.nio.charset.Charset;
+
+/**
+ * Created by maoxiangyi on 2017/6/26.
+ */
+public class SimpleGet {
+    public static void main(String[] args) throws Exception {
+        CloseableHttpClient httpclient = HttpClients.createDefault();
+        HttpGet httpGet = new HttpGet(&quot;http://sspc.itcast.cn&quot;);
+        CloseableHttpResponse response = httpclient.execute(httpGet);
+        System.out.println(response.getStatusLine());
+        if (response.getStatusLine().getStatusCode() == 200) {
+            HttpEntity entity = response.getEntity();
+            String html = EntityUtils.toString(entity, Charset.forName(&quot;utf-8&quot;));
+            System.out.println(html);
+        }
+        response.close();
+    }
+}
+</code></pre>
+<h3 id="3-2-httpclient-post-">3.2、使用HttpClient进行Post请求</h3>
+<p>使用HttpClient进行Post请求</p>
+<ul>
+<li>HttpClients.createDefault 创建一个客户端</li><li>HttpPost 创建一个Post请求<ul>
+<li>UrlEncodedFormEntity 封装表单信息</li></ul>
+</li><li>httpclient.execute(HttpPost) 执行一个请求</li><li>CloseableHttpResponse 获取返回值<ul>
+<li>getStatusLine 获取状态信息 </li><li>EntityUtils 操作返回内容</li></ul>
+</li></ul>
+<p>代码实现：</p>
+<pre><code class="lang-java">import org.apache.http.Header;
+import org.apache.http.HttpEntity;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
+
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Created by maoxiangyi on 2017/6/26.
+ */
+public class SimplePost {
+    public static void main(String[] args) throws Exception {
+        CloseableHttpClient httpclient = HttpClients.createDefault();
+        HttpPost httpPost = new HttpPost(&quot;http://shop.itcast.cn/login/login.html&quot;);
+        List&lt;NameValuePair&gt; nvps = new ArrayList&lt;NameValuePair&gt;();
+        nvps.add(new BasicNameValuePair(&quot;username&quot;, &quot;maoxiangyi&quot;));
+        nvps.add(new BasicNameValuePair(&quot;password&quot;, &quot;maoxiangyi&quot;));
+        nvps.add(new BasicNameValuePair(&quot;reURL&quot;, &quot;http://shop.itcast.cn/item/itemList.html&quot;));
+        httpPost.setEntity(new UrlEncodedFormEntity(nvps));
+        CloseableHttpResponse response = httpclient.execute(httpPost);
+        System.out.println(response.getStatusLine());
+        //如果登录之后需要重定向，获取重定向的值
+        Header[] headers = response.getAllHeaders();
+        for (Header header : headers) {
+            System.out.println(header);
+        }
+        if (response.getStatusLine().getStatusCode() == 302) {
+            Header[] locations = response.getHeaders(&quot;Location&quot;);
+            String url = locations[0].getValue();
+            System.out.println(url);
+            HttpGet httpGet = new HttpGet(url);
+            CloseableHttpResponse response1 = httpclient.execute(httpGet);
+            if (response1.getStatusLine().getStatusCode() == 200) {
+                HttpEntity entity = response1.getEntity();
+                String html = EntityUtils.toString(entity, Charset.forName(&quot;utf-8&quot;));
+                System.out.println(html);
+            }
+            response1.close();
+        }
+        response.close();
+    }
+}
+</code></pre>
+<h3 id="3-3-httpclient-get-">3.3、使用HttpClient进行Get请求-简单方式</h3>
+<p>使用HttpClient进行Get请求-简单方式</p>
+<pre><code class="lang-java">import org.apache.http.HttpEntity;
+import org.apache.http.HttpHost;
+import org.apache.http.HttpVersion;
+import org.apache.http.client.fluent.Form;
+import org.apache.http.client.fluent.Request;
+import org.apache.http.entity.ContentType;
+
+import java.io.IOException;
+import java.nio.charset.Charset;
+
+/**
+ * Created by maoxiangyi on 2017/6/26.
+ */
+public class EasyGet {
+    public static void main(String[] args) throws IOException {
+        String html = Request.Get(&quot;http://shop.itcast.cn&quot;).execute().returnContent().asString(Charset.forName(&quot;UTF-8&quot;));
+        System.out.println(html);
+    }
+}
+</code></pre>
+<h3 id="3-4-httpclient-post-">3.4、使用HttpClient进行Post请求-简单</h3>
+<p>使用HttpClient进行Post请求-简单方式</p>
+<pre><code class="lang-java">import org.apache.http.Header;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.fluent.Form;
+import org.apache.http.client.fluent.Request;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.util.EntityUtils;
+
+import java.io.IOException;
+import java.nio.charset.Charset;
+
+/**
+ * Created by maoxiangyi on 2017/6/26.
+ */
+public class EasyPost {
+    public static void main(String[] args) throws IOException {
+        HttpResponse response = Request.Post(&quot;http://shop.itcast.cn/login/login.html&quot;)
+                .bodyForm(Form.form().add(&quot;username&quot;, &quot;maoxiangyi&quot;).add(&quot;password&quot;, &quot;maoxiangyi&quot;).add(&quot;reURL&quot;,&quot;http://shop.itcast.cn/item/itemList.html&quot;).build())
+                .execute().returnResponse();
+        if (response.getStatusLine().getStatusCode() == 302) {
+            Header[] locations = response.getHeaders(&quot;Location&quot;);
+            String url = locations[0].getValue();
+            System.out.println(url);
+            HttpGet httpGet = new HttpGet(url);
+            String html =  Request.Get(url).execute().returnContent().asString(Charset.forName(&quot;UTF-8&quot;));
+            System.out.println(html);
+        }
+    }
+}
+</code></pre>
+
+</body>
+</html>
+<!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->

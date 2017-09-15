@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>1-爬虫项目高级内容</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+/* GitHub stylesheet for MarkdownPad (http://markdownpad.com) */
+/* Author: Nicolas Hery - http://nicolashery.com */
+/* Version: b13fe65ca28d2e568c6ed5d7f06581183df8f2ff */
+/* Source: https://github.com/nicolahery/markdownpad-github */
+
+/* RESET
+=============================================================================*/
+
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* BODY
+=============================================================================*/
+
+body {
+  font-family: Helvetica, arial, freesans, clean, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
+  background-color: #fff;
+  padding: 20px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+body>*:first-child {
+  margin-top: 0 !important;
+}
+
+body>*:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* BLOCKS
+=============================================================================*/
+
+p, blockquote, ul, ol, dl, table, pre {
+  margin: 15px 0;
+}
+
+/* HEADERS
+=============================================================================*/
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 20px 0 10px;
+  padding: 0;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 tt, h1 code, h2 tt, h2 code, h3 tt, h3 code, h4 tt, h4 code, h5 tt, h5 code, h6 tt, h6 code {
+  font-size: inherit;
+}
+
+h1 {
+  font-size: 28px;
+  color: #000;
+}
+
+h2 {
+  font-size: 24px;
+  border-bottom: 1px solid #ccc;
+  color: #000;
+}
+
+h3 {
+  font-size: 18px;
+}
+
+h4 {
+  font-size: 16px;
+}
+
+h5 {
+  font-size: 14px;
+}
+
+h6 {
+  color: #777;
+  font-size: 14px;
+}
+
+body>h2:first-child, body>h1:first-child, body>h1:first-child+h2, body>h3:first-child, body>h4:first-child, body>h5:first-child, body>h6:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+h1+p, h2+p, h3+p, h4+p, h5+p, h6+p {
+  margin-top: 10px;
+}
+
+/* LINKS
+=============================================================================*/
+
+a {
+  color: #4183C4;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* LISTS
+=============================================================================*/
+
+ul, ol {
+  padding-left: 30px;
+}
+
+ul li > :first-child, 
+ol li > :first-child, 
+ul li ul:first-of-type, 
+ol li ol:first-of-type, 
+ul li ol:first-of-type, 
+ol li ul:first-of-type {
+  margin-top: 0px;
+}
+
+ul ul, ul ol, ol ol, ol ul {
+  margin-bottom: 0;
+}
+
+dl {
+  padding: 0;
+}
+
+dl dt {
+  font-size: 14px;
+  font-weight: bold;
+  font-style: italic;
+  padding: 0;
+  margin: 15px 0 5px;
+}
+
+dl dt:first-child {
+  padding: 0;
+}
+
+dl dt>:first-child {
+  margin-top: 0px;
+}
+
+dl dt>:last-child {
+  margin-bottom: 0px;
+}
+
+dl dd {
+  margin: 0 0 15px;
+  padding: 0 15px;
+}
+
+dl dd>:first-child {
+  margin-top: 0px;
+}
+
+dl dd>:last-child {
+  margin-bottom: 0px;
+}
+
+/* CODE
+=============================================================================*/
+
+pre, code, tt {
+  font-size: 12px;
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
+}
+
+code, tt {
+  margin: 0 0px;
+  padding: 0px 0px;
+  white-space: nowrap;
+  border: 1px solid #eaeaea;
+  background-color: #f8f8f8;
+  border-radius: 3px;
+}
+
+pre>code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent;
+}
+
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px;
+}
+
+pre code, pre tt {
+  background-color: transparent;
+  border: none;
+}
+
+kbd {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #DDDDDD;
+    background-image: linear-gradient(#F1F1F1, #DDDDDD);
+    background-repeat: repeat-x;
+    border-color: #DDDDDD #CCCCCC #CCCCCC #DDDDDD;
+    border-image: none;
+    border-radius: 2px 2px 2px 2px;
+    border-style: solid;
+    border-width: 1px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    line-height: 10px;
+    padding: 1px 4px;
+}
+
+/* QUOTES
+=============================================================================*/
+
+blockquote {
+  border-left: 4px solid #DDD;
+  padding: 0 15px;
+  color: #777;
+}
+
+blockquote>:first-child {
+  margin-top: 0px;
+}
+
+blockquote>:last-child {
+  margin-bottom: 0px;
+}
+
+/* HORIZONTAL RULES
+=============================================================================*/
+
+hr {
+  clear: both;
+  margin: 15px 0;
+  height: 0px;
+  overflow: hidden;
+  border: none;
+  background: transparent;
+  border-bottom: 4px solid #ddd;
+  padding: 0;
+}
+
+/* TABLES
+=============================================================================*/
+
+table th {
+  font-weight: bold;
+}
+
+table th, table td {
+  border: 1px solid #ccc;
+  padding: 6px 13px;
+}
+
+table tr {
+  border-top: 1px solid #ccc;
+  background-color: #fff;
+}
+
+table tr:nth-child(2n) {
+  background-color: #f8f8f8;
+}
+
+/* IMAGES
+=============================================================================*/
+
+img {
+  max-width: 100%
+}
+</style>
+<style type="text/css">
+.highlight  { background: #ffffff; }
+.highlight .c { color: #999988; font-style: italic } /* Comment */
+.highlight .err { color: #a61717; background-color: #e3d2d2 } /* Error */
+.highlight .k { font-weight: bold } /* Keyword */
+.highlight .o { font-weight: bold } /* Operator */
+.highlight .cm { color: #999988; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #999999; font-weight: bold } /* Comment.Preproc */
+.highlight .c1 { color: #999988; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #999999; font-weight: bold; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #000000; background-color: #ffdddd } /* Generic.Deleted */
+.highlight .gd .x { color: #000000; background-color: #ffaaaa } /* Generic.Deleted.Specific */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .gr { color: #aa0000 } /* Generic.Error */
+.highlight .gh { color: #999999 } /* Generic.Heading */
+.highlight .gi { color: #000000; background-color: #ddffdd } /* Generic.Inserted */
+.highlight .gi .x { color: #000000; background-color: #aaffaa } /* Generic.Inserted.Specific */
+.highlight .go { color: #888888 } /* Generic.Output */
+.highlight .gp { color: #555555 } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #aaaaaa } /* Generic.Subheading */
+.highlight .gt { color: #aa0000 } /* Generic.Traceback */
+.highlight .kc { font-weight: bold } /* Keyword.Constant */
+.highlight .kd { font-weight: bold } /* Keyword.Declaration */
+.highlight .kp { font-weight: bold } /* Keyword.Pseudo */
+.highlight .kr { font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #445588; font-weight: bold } /* Keyword.Type */
+.highlight .m { color: #009999 } /* Literal.Number */
+.highlight .s { color: #d14 } /* Literal.String */
+.highlight .na { color: #008080 } /* Name.Attribute */
+.highlight .nb { color: #0086B3 } /* Name.Builtin */
+.highlight .nc { color: #445588; font-weight: bold } /* Name.Class */
+.highlight .no { color: #008080 } /* Name.Constant */
+.highlight .ni { color: #800080 } /* Name.Entity */
+.highlight .ne { color: #990000; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #990000; font-weight: bold } /* Name.Function */
+.highlight .nn { color: #555555 } /* Name.Namespace */
+.highlight .nt { color: #000080 } /* Name.Tag */
+.highlight .nv { color: #008080 } /* Name.Variable */
+.highlight .ow { font-weight: bold } /* Operator.Word */
+.highlight .w { color: #bbbbbb } /* Text.Whitespace */
+.highlight .mf { color: #009999 } /* Literal.Number.Float */
+.highlight .mh { color: #009999 } /* Literal.Number.Hex */
+.highlight .mi { color: #009999 } /* Literal.Number.Integer */
+.highlight .mo { color: #009999 } /* Literal.Number.Oct */
+.highlight .sb { color: #d14 } /* Literal.String.Backtick */
+.highlight .sc { color: #d14 } /* Literal.String.Char */
+.highlight .sd { color: #d14 } /* Literal.String.Doc */
+.highlight .s2 { color: #d14 } /* Literal.String.Double */
+.highlight .se { color: #d14 } /* Literal.String.Escape */
+.highlight .sh { color: #d14 } /* Literal.String.Heredoc */
+.highlight .si { color: #d14 } /* Literal.String.Interpol */
+.highlight .sx { color: #d14 } /* Literal.String.Other */
+.highlight .sr { color: #009926 } /* Literal.String.Regex */
+.highlight .s1 { color: #d14 } /* Literal.String.Single */
+.highlight .ss { color: #990073 } /* Literal.String.Symbol */
+.highlight .bp { color: #999999 } /* Name.Builtin.Pseudo */
+.highlight .vc { color: #008080 } /* Name.Variable.Class */
+.highlight .vg { color: #008080 } /* Name.Variable.Global */
+.highlight .vi { color: #008080 } /* Name.Variable.Instance */
+.highlight .il { color: #009999 } /* Literal.Number.Integer.Long */
+.pl-c {
+    color: #969896;
+}
+
+.pl-c1,.pl-mdh,.pl-mm,.pl-mp,.pl-mr,.pl-s1 .pl-v,.pl-s3,.pl-sc,.pl-sv {
+    color: #0086b3;
+}
+
+.pl-e,.pl-en {
+    color: #795da3;
+}
+
+.pl-s1 .pl-s2,.pl-smi,.pl-smp,.pl-stj,.pl-vo,.pl-vpf {
+    color: #333;
+}
+
+.pl-ent {
+    color: #63a35c;
+}
+
+.pl-k,.pl-s,.pl-st {
+    color: #a71d5d;
+}
+
+.pl-pds,.pl-s1,.pl-s1 .pl-pse .pl-s2,.pl-sr,.pl-sr .pl-cce,.pl-sr .pl-sra,.pl-sr .pl-sre,.pl-src,.pl-v {
+    color: #df5000;
+}
+
+.pl-id {
+    color: #b52a1d;
+}
+
+.pl-ii {
+    background-color: #b52a1d;
+    color: #f8f8f8;
+}
+
+.pl-sr .pl-cce {
+    color: #63a35c;
+    font-weight: bold;
+}
+
+.pl-ml {
+    color: #693a17;
+}
+
+.pl-mh,.pl-mh .pl-en,.pl-ms {
+    color: #1d3e81;
+    font-weight: bold;
+}
+
+.pl-mq {
+    color: #008080;
+}
+
+.pl-mi {
+    color: #333;
+    font-style: italic;
+}
+
+.pl-mb {
+    color: #333;
+    font-weight: bold;
+}
+
+.pl-md,.pl-mdhf {
+    background-color: #ffecec;
+    color: #bd2c00;
+}
+
+.pl-mdht,.pl-mi1 {
+    background-color: #eaffea;
+    color: #55a532;
+}
+
+.pl-mdr {
+    color: #795da3;
+    font-weight: bold;
+}
+
+.pl-mo {
+    color: #1d3e81;
+}
+.task-list {
+padding-left:10px;
+margin-bottom:0;
+}
+
+.task-list li {
+    margin-left: 20px;
+}
+
+.task-list-item {
+list-style-type:none;
+padding-left:10px;
+}
+
+.task-list-item label {
+font-weight:400;
+}
+
+.task-list-item.enabled label {
+cursor:pointer;
+}
+
+.task-list-item+.task-list-item {
+margin-top:3px;
+}
+
+.task-list-item-checkbox {
+display:inline-block;
+margin-left:-20px;
+margin-right:3px;
+vertical-align:1px;
+}
+</style>
+</head>
+<body>
+<h1 id="-">爬虫高级课程</h1>
+<ul>
+<li>1、某新闻网站部署<ul>
+<li>1.1、部署环境准备</li><li>1.2、配置项目运行环境<ul>
+<li>1.2.1、项目需要的环境分析</li><li>1.2.2、安装环境</li></ul>
+</li><li>1.3、部署项目<ul>
+<li>1.3.1、在mysql上创建数据库</li><li>1.3.2、将项目打包</li><li>1.3.3、运行项目</li></ul>
+</li><li>1.4 在window上远程访问mysql</li></ul>
+</li><li>2、单机爬虫如何演变成分布式爬虫<ul>
+<li>单机爬虫的问题</li><li>分布式爬虫的一般架构<ul>
+<li>单机爬虫架构</li><li>分布式爬虫架构</li></ul>
+</li><li>分布式爬虫开发技术分析</li></ul>
+</li><li>3、开发某电商分布式爬虫<ul>
+<li></li></ul>
+</li></ul>
+<h1 id="1-">1、某新闻网站部署</h1>
+<p><img src="img/2017-09-07_152551.png" alt=""></p>
+<h1 id="1-1-">1.1、部署环境准备</h1>
+<ul>
+<li>需要一台服务器<ul>
+<li>在企业中是真实的硬件</li><li>在学习中是虚拟机</li></ul>
+</li><li>在服务器上安装linux操作系统<ul>
+<li>互联网企业基本上都是使用linux系统</li><li>一般都会安装CentOS的版本，6.5以上。</li></ul>
+</li></ul>
+<h1 id="1-2-">1.2、配置项目运行环境</h1>
+<h4 id="1-2-1-">1.2.1、环境基本情况</h4>
+<ul>
+<li>Java项目都需要安装JDK</li><li>爬虫项目需要连接外网，需要linux服务器能够联网</li><li>爬虫爬取的数据需要保存到数据，需要安装数据库</li></ul>
+<h4 id="1-2-2-">1.2.2、安装环境</h4>
+<ul>
+<li>安装JDK，省略</li><li>配置Linux的网络<ul>
+<li>三种网络方式</li></ul>
+</li><li>安装数据库<br>安装命令：<pre><code class="lang-shell">yum install -y mysql-server
+</code></pre>
+启动命令：<pre><code class="lang-shell">service mysqld start
+</code></pre>
+</li></ul>
+<h1 id="1-3-">1.3 部署项目</h1>
+<h4 id="1-3-1-mysql-">1.3.1、在mysql上创建数据库</h4>
+<ul>
+<li>数据库建表语句<pre><code class="lang-shell">DROP TABLE IF EXISTS `huxiu_article`;
+CREATE TABLE `huxiu_article` (
+`id` varchar(250) DEFAULT NULL,
+`title` varchar(250) DEFAULT NULL,
+`author` varchar(250) DEFAULT NULL,
+`createTime` varchar(250) DEFAULT NULL,
+`zan` varchar(250) DEFAULT NULL,
+`pl` varchar(250) DEFAULT NULL,
+`sc` varchar(250) DEFAULT NULL,
+`content` blob,
+`url` varchar(250) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</code></pre>
+</li><li>操作记录<br><img src="img/2017-09-07_134111.png" alt=""></li></ul>
+<h4 id="1-3-2-">1.3.2、将项目打包</h4>
+<ul>
+<li><p>修改数据库链接信息</p>
+<pre><code class="lang-shell">public class ArticleDao extends JdbcTemplate {
+
+  public ArticleDao() {
+      // 创建C3P0的datasource 1.配置 2.代码
+      ComboPooledDataSource dataSource = new ComboPooledDataSource();
+      // 1.url
+      dataSource.setJdbcUrl(&quot;jdbc:mysql://localhost:3306/spider?characterEncoding=utf-8&quot;);
+      // 2.driver 不需要
+      // 3.username&amp;password
+      dataSource.setUser(&quot;root&quot;);
+      dataSource.setPassword(&quot;root&quot;);
+      setDataSource(dataSource);
+  }
+}
+</code></pre>
+</li><li>eclipse默认打包方式没有依赖的jar</li><li>使用maven的assembly plugin插件<pre><code class="lang-shell">&lt;build&gt;
+      &lt;plugins&gt;
+          &lt;plugin&gt;
+              &lt;artifactId&gt;maven-assembly-plugin&lt;/artifactId&gt;
+              &lt;configuration&gt;
+                  &lt;archive&gt;
+                      &lt;manifest&gt;
+                          &lt;mainClass&gt;huxiuSpider.HuxiuSpider&lt;/mainClass&gt;
+                      &lt;/manifest&gt;
+                  &lt;/archive&gt;
+                  &lt;descriptorRefs&gt;
+                      &lt;descriptorRef&gt;jar-with-dependencies&lt;/descriptorRef&gt;
+                  &lt;/descriptorRefs&gt;
+              &lt;/configuration&gt;
+          &lt;/plugin&gt;
+      &lt;/plugins&gt;
+  &lt;/build&gt;
+</code></pre>
+<ul>
+<li>compile assembly:single</li><li>操作示意<br><img src="img/2017-09-07_135944.png" alt=""></li><li>查看打好的包<br><img src="img/2017-09-07_140246.png" alt=""></li></ul>
+</li></ul>
+<h4 id="1-3-3-">1.3.3、运行项目</h4>
+<p>基本命令</p>
+<ul>
+<li>将项目上传到Linux服务器上<ul>
+<li>使用rz命令上传<br><img src="img/2017-09-07_140804.png" alt=""></li></ul>
+</li><li><p>运行 java 包</p>
+<ul>
+<li><p>java -jar xxx.jar</p>
+</li><li><p>解决错误 Access denied for user &#39;root&#39;@&#39;localhost&#39; (using password: YES)</p>
+<pre><code class="lang-shell">java.sql.SQLException: Access denied for user &#39;root&#39;@&#39;localhost&#39; (using password: YES)
+  at com.mysql.jdbc.SQLError.createSQLException(SQLError.java:964)
+  at com.mysql.jdbc.MysqlIO.checkErrorPacket(MysqlIO.java:3973)
+  at com.mysql.jdbc.MysqlIO.checkErrorPacket(MysqlIO.java:3909)
+  at com.mysql.jdbc.MysqlIO.checkErrorPacket(MysqlIO.java:873)
+  at com.mysql.jdbc.MysqlIO.secureAuth411(MysqlIO.java:4420)
+  at com.mysql.jdbc.MysqlIO.doHandshake(MysqlIO.java:1278)
+  at com.mysql.jdbc.ConnectionImpl.coreConnect(ConnectionImpl.java:2205)
+  at com.mysql.jdbc.ConnectionImpl.connectOneTryOnly(ConnectionImpl.java:2236)
+  at com.mysql.jdbc.ConnectionImpl.createNewIO(ConnectionImpl.java:2035)
+  at com.mysql.jdbc.ConnectionImpl.&lt;init&gt;(ConnectionImpl.java:790)
+  at com.mysql.jdbc.JDBC4Connection.&lt;init&gt;(JDBC4Connection.java:47)
+  at sun.reflect.GeneratedConstructorAccessor29.newInstance(Unknown Source)
+  at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)
+  at java.lang.reflect.Constructor.newInstance(Constructor.java:423)
+  at com.mysql.jdbc.Util.handleNewInstance(Util.java:425)
+  at com.mysql.jdbc.ConnectionImpl.getInstance(ConnectionImpl.java:400)
+  at com.mysql.jdbc.NonRegisteringDriver.connect(NonRegisteringDriver.java:330)
+  at com.mchange.v2.c3p0.DriverManagerDataSource.getConnection(DriverManagerDataSource.java:134)
+  at com.mchange.v2.c3p0.WrapperConnectionPoolDataSource.getPooledConnection(WrapperConnectionPoolDataSource.java:182)
+  at com.mchange.v2.c3p0.WrapperConnectionPoolDataSource.getPooledConnection(WrapperConnectionPoolDataSource.java:171)
+  at com.mchange.v2.c3p0.impl.C3P0PooledConnectionPool$1PooledConnectionResourcePoolManager.acquireResource(C3P0PooledConnectionPool.java:137)
+  at com.mchange.v2.resourcepool.BasicResourcePool.doAcquire(BasicResourcePool.java:1014)
+  at com.mchange.v2.resourcepool.BasicResourcePool.access$800(BasicResourcePool.java:32)
+  at com.mchange.v2.resourcepool.BasicResourcePool$AcquireTask.run(BasicResourcePool.java:1810)
+  at com.mchange.v2.async.ThreadPoolAsynchronousRunner$PoolThread.run(ThreadPoolAsynchronousRunner.java:547)
+</code></pre>
+<p>解决错误的方法：</p>
+<pre><code class="lang-shell">use mysql;
+UPDATE user SET Password = PASSWORD(&#39;root&#39;) WHERE user = &#39;root&#39;;
+flush privileges; 
+-
+use mysql;
+select Host,user,password from user;
+-
+grant all privileges on *.* to root@&quot;localhost&quot; identified by &quot;root&quot; with grant option;
+flush privileges;
+</code></pre>
+</li></ul>
+</li><li>运行效果<br><img src="img/2017-09-07_142338.png" alt=""> </li><li>解决错误 mysql客户端乱码<pre><code class="lang-shell">show variables like &#39;%char%&#39;;
+</code></pre>
+vi /etc/my.cnf<pre><code class="lang-shell">[mysql]
+default-character-set=utf8
+</code></pre>
+<img src="img/2017-09-07_143110.png" alt=""></li></ul>
+<h1 id="1-4-window-mysql">1.4 在window上远程访问mysql</h1>
+<ul>
+<li>不能连接<br><img src="img/2017-09-07_143749.png" alt=""><br><strong>解决办法，关闭防火墙</strong><pre><code class="lang-shell">service iptables stop
+</code></pre>
+</li><li>不被允许连接<br><img src="img/2017-09-07_144001.png" alt=""><br><strong>解决方法，在mysql.user表中开放权限</strong><pre><code class="lang-shell">grant all privileges on *.* to root@&quot;192.168.239.2&quot; identified by &quot;root&quot; with grant option;
+flush privileges;
+</code></pre>
+<img src="img/2017-09-07_144313.png" alt=""></li></ul>
+<h1 id="1-5-">1.5、将项目部署到服务器的几个常见问题</h1>
+<ul>
+<li>数据库问题<ul>
+<li>创建数据库</li><li>修改密码，使项目中的密码与之相同</li><li>开放数据库连接</li><li>mysql客户端的显示乱码问题</li></ul>
+</li><li>系统层面<ul>
+<li>防火墙的问题<ul>
+<li>直接关闭防火墙</li><li>或者请运维单独配置</li></ul>
+</li></ul>
+</li></ul>
+<h1 id="2-">2、单机版本的爬虫如何演变成分布式爬虫</h1>
+<h1 id="2-1-">2.1 单机爬虫的问题</h1>
+<ul>
+<li>单机爬虫运行在一台服务器的一个JVM上。<ul>
+<li>服务器有停电的风险</li><li>服务器有磁盘坏掉的风险</li><li>服务器的网卡一般都是千兆网卡，数据量太大会有风险<ul>
+<li>千兆网络是全双工的,也就是上下行是并行工作的,也就是说上行下行同时能达到理论值125MB/s</li></ul>
+</li><li>JVM本质上是个进程，虽说很稳定，但也有挂掉的风险</li></ul>
+</li><li>面对有防御策略的网站，单机爬虫战斗力不足<ul>
+<li>参见<a href="2-爬虫攻防技术分析.html">《爬虫攻防技术分析》</a></li></ul>
+</li></ul>
+<h1 id="2-2-">2.2、分布式爬虫的一般架构</h1>
+<h4 id="2-2-1-">2.2.1 单机爬虫的架构</h4>
+<p><img src="img/2017-09-07_152721.png" alt=""></p>
+<h4 id="2-2-2-">2.2.2 分布式爬虫的架构</h4>
+<p><img src="img/2017-09-07_155433.png" alt=""></p>
+<h1 id="2-3-">2.3、分布式爬虫开发技术分析</h1>
+<ul>
+<li>需要开发一个master</li><li>需要开发一个slave程序，并启动多个</li><li>需要一个公共的阻塞式队列（Redis List）</li><li>需要一个公共的去重的容器（Redis Set）</li></ul>
+<h1 id="3-">3、开发某电商分布式爬虫</h1>
+<h1 id="3-1-">3.1、需求说明</h1>
+<ul>
+<li>爬取京东网站手机信息</li><li>将爬取的数据保存到数据库</li></ul>
+<h1 id="3-2-">3.2、需求分析</h1>
+<ul>
+<li>入口分析<ul>
+<li>类目</li><li>搜索</li></ul>
+</li><li>请求参数分析<ul>
+<li>首页分析</li><li>分页分析</li></ul>
+</li></ul>
+<h1 id="3-3-">3.3、功能分析</h1>
+<ul>
+<li>首页功能分析</li><li>分页功能分析</li></ul>
+<h1 id="3-4-">3.4、代码开发</h1>
+<p>见代码</p>
+<h1 id="3-5-">3.5、项目部署-学生动手实践</h1>
+
+</body>
+</html>
+<!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->
